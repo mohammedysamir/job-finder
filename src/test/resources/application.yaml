@@ -1,0 +1,39 @@
+spring:
+  #default spring security configuration
+  security:
+    user:
+      name: user
+      password: password
+      roles: USER
+
+  #redis configuration
+  redis:
+    host: localhost
+    port: 6379
+    timeout: 2000
+    database: 0
+
+  #Database configuration
+  jpa:
+    defer-datasource-initialization: true
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+    h2:
+      console:
+        enabled: true
+
+#Actuator info configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "info,health,metrics"
+  endpoint:
+    health:
+      show-details: always
+    info:
+      git:
+        enabled:   true
