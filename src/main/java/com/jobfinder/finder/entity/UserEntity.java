@@ -16,7 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
-
+//todo: create index on username and email
 @Entity(name = "user")
 @AllArgsConstructor
 @Getter
