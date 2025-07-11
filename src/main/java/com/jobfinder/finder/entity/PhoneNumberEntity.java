@@ -1,6 +1,8 @@
 package com.jobfinder.finder.entity;
 
+import com.jobfinder.finder.validator.ValidPhoneNumber;
 import jakarta.persistence.Entity;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -13,6 +15,6 @@ public class PhoneNumberEntity {
   @NotBlank
   private String username;
   @NotBlank
-  //todo: add regex validation for phone number
+  @ValidPhoneNumber
   private String phoneNumber;
 }
