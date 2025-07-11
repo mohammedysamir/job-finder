@@ -1,0 +1,24 @@
+package com.jobfinder.finder.dto;
+
+import com.jobfinder.finder.constant.EmploymentType;
+import com.jobfinder.finder.constant.PostStatus;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+public class PostDto {
+  private String title;
+  private String description;
+  private PostStatus status; // e.g., "active", "closed", "suspended"
+  private String location;
+  private String companyName;
+  private EmploymentType employmentType; // e.g., Full-time, Part-time, Contract
+  private int minimumExperience;
+  private int maximumExperience;
+  private String skillsRequired; // Comma-separated list of skills
+  private String recruiterUsername; // username of the recruiter who created the post
+}

@@ -37,8 +37,10 @@ public class PostEntity {
   @Enumerated(value = jakarta.persistence.EnumType.STRING)
   private EmploymentType employmentType; // e.g., Full-time, Part-time, Contract
   @NotBlank
-  @Min(1)
-  private String salaryRange; // e.g., "50,000 - 70,000"
+  @Min(0)
+  private int minimumExperience;
+  @NotBlank
+  private int maximumExperience;
   @NotEmpty
   private List<String> skillsRequired; // Comma-separated list of skills
   @NotBlank
