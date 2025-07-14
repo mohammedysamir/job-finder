@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,7 +39,7 @@ public class PostController {
   }
 
   @PatchMapping("/{postId}")
-  public ResponseEntity<PostDto> updatePost(@PathVariable String postId, PostDto dto) {
+  public ResponseEntity<PostDto> updatePost(@PathVariable String postId,@RequestBody PostDto dto) {
     log.info("Updating post with ID: {} with data: {}", postId, dto);
     PostDto updatedPost = postService.updatePost(postId, dto);
     return new ResponseEntity<>(updatedPost, HttpStatus.OK);
