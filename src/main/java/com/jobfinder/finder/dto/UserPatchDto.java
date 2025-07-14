@@ -3,9 +3,15 @@ package com.jobfinder.finder.dto;
 import com.jobfinder.finder.validator.ValidPhoneNumber;
 import java.time.LocalDate;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
 public class UserPatchDto {
   private String password;
   private String email;
