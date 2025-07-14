@@ -15,16 +15,25 @@ public class SecurityConfiguration {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     return http
         .httpBasic(Customizer.withDefaults())
+        .csrf(customizer -> customizer.disable()) // will use stateless authentication, so CSRF protection is not needed
         .authorizeHttpRequests(
             c ->
-                c.requestMatchers("/actuator/**").hasAnyRole(Roles.SUPER_ADMIN.name(), Roles.ADMIN.name()) // Allow access to actuator endpoints to admins
+                // Define access rules for different endpoints
+                //-- Public endpoints
+                c.requestMatchers("/login", "/register").permitAll() // Allow public access to login and register
+                    //-- Admin related endpoints
+                    .requestMatchers("/actuator/**").hasAnyRole(Roles.SUPER_ADMIN.name(), Roles.ADMIN.name()) // Allow access to actuator endpoints to admins
                     .requestMatchers("/admin/**").hasRole(Roles.SUPER_ADMIN.name())
+                    //-- User related endpoints
+                    .requestMatchers("/user/**").hasAnyRole(Roles.APPLICANT.name())
+                    //-- Post related endpoints
                     .requestMatchers(HttpMethod.DELETE, "/post/**")
                     .hasAnyRole(Roles.RECRUITER.name()
                         , Roles.ADMIN.name()
                         , Roles.SUPER_ADMIN.name()) // admins and recruiters can delete posts
-                    .requestMatchers("/user/**").hasAnyRole(Roles.APPLICANT.name())
-                    .requestMatchers(HttpMethod.GET,"/post/**").hasAnyRole(Roles.APPLICANT.name())
+                    .requestMatchers(HttpMethod.GET, "/post/**").hasAnyRole(Roles.APPLICANT.name())
+                    .requestMatchers(HttpMethod.POST, "/post/**").hasAnyRole(Roles.RECRUITER.name())
+                    .requestMatchers(HttpMethod.PATCH, "/post/**").hasAnyRole(Roles.RECRUITER.name())
                     .anyRequest().authenticated() // Require authentication for all other requests
         ).build();
   }
