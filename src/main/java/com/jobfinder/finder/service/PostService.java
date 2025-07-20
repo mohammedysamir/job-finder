@@ -30,7 +30,7 @@ public class PostService {
     if (null != filter) {
       log.info("Fetching posts with filter: {}", filter);
       Specification<PostEntity> spec = withFilters(filter);
-      pageResult = postRepository.findAll(spec, (Pageable) pageRequest);
+      pageResult = postRepository.findAll(spec, pageRequest);
     } else {
       log.info("Fetching posts without filters");
       pageResult = postRepository.findAll(pageRequest);
