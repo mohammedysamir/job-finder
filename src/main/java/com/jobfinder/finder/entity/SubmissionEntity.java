@@ -1,6 +1,7 @@
 package com.jobfinder.finder.entity;
 
 import com.jobfinder.finder.constant.SubmissionStatus;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -20,7 +21,8 @@ public class SubmissionEntity {
   @Id
   private String id;
   @NotBlank
-  private String userName;
+  @Column(unique = true)
+  private String username;
   @NotBlank
   private String postId;
   private String coverLetter;

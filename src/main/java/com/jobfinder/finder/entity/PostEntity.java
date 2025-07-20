@@ -12,12 +12,14 @@ import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity(name = "post")
 @AllArgsConstructor
 @Getter
+@Setter
 public class PostEntity {
   @GeneratedValue(strategy = IDENTITY)
   @Id
