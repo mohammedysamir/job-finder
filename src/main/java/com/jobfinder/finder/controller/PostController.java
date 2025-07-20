@@ -2,6 +2,7 @@ package com.jobfinder.finder.controller;
 
 import com.jobfinder.finder.constant.PostStatus;
 import com.jobfinder.finder.dto.PostDto;
+import com.jobfinder.finder.dto.PostFilterRequestDto;
 import com.jobfinder.finder.service.PostService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,10 +27,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostController {
   private final PostService postService;
 
+  //GET /posts?title=Java&page=0&size=10
   @GetMapping
-  public ResponseEntity<List<PostDto>> getPosts(@RequestParam(required = false) String filter) {
+  public ResponseEntity<List<PostDto>> getPosts(@ModelAttribute PostFilterRequestDto filter, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
     log.info("Fetching posts");
-    return new ResponseEntity<>(postService.getPosts(filter), HttpStatus.OK);
+    return new ResponseEntity<>(postService.getPosts(filter, page,size), HttpStatus.OK);
   }
 
   @PostMapping

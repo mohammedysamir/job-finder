@@ -2,6 +2,7 @@ package com.jobfinder.finder.dto;
 
 import com.jobfinder.finder.constant.EmploymentType;
 import com.jobfinder.finder.constant.PostStatus;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,6 @@ public class PostDto {
   private EmploymentType employmentType; // e.g., Full-time, Part-time, Contract
   private int minimumExperience;
   private int maximumExperience;
-  private String skillsRequired; // Comma-separated list of skills
+  private List<String> skillsRequired;
   private String recruiterUsername; // username of the recruiter who created the post
 }

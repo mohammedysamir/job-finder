@@ -4,7 +4,9 @@ import com.jobfinder.finder.constant.EmploymentType;
 import com.jobfinder.finder.constant.PostStatus;
 import com.jobfinder.finder.controller.PostController;
 import com.jobfinder.finder.dto.PostDto;
+import com.jobfinder.finder.dto.PostFilterRequestDto;
 import com.jobfinder.finder.integrationTest.configuration.MockUserDetailsManagerConfig;
+import com.jobfinder.finder.mapper.PostMapper;
 import com.jobfinder.finder.service.PostService;
 import java.net.URI;
 import java.util.List;
@@ -12,7 +14,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
@@ -25,9 +26,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpClientErrorException.Forbidden;
 import org.springframework.web.client.RestClientException;
 
 @Import(MockUserDetailsManagerConfig.class)
@@ -38,10 +38,13 @@ import org.springframework.web.client.RestClientException;
     org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration.class,
     RedisAutoConfiguration.class
 })
+@ActiveProfiles("test")
 public class PostControllerIntegrationTest {
   private TestRestTemplate testRestTemplate;
   @MockBean
   private PostService postService;
+  @MockBean
+  private PostMapper postMapper;
   @InjectMocks
   private PostController postController;
   @LocalServerPort
@@ -52,10 +55,10 @@ public class PostControllerIntegrationTest {
     // Given
     testRestTemplate = new TestRestTemplate("applicant", "applicant");
     String url = "http://localhost:" + port + "/post";
-    Mockito.when(postService.getPosts(null)).thenReturn(
+    Mockito.when(postService.getPosts(null,0,10)).thenReturn(
         List.of(
-            new PostDto("Title1", "Description1", PostStatus.ACTIVE, "Location1", "Company1", EmploymentType.FULL_TIME, 2, 5, "Java, Spring", "recruiter1"),
-            new PostDto("Title2", "Description2", PostStatus.CLOSED, "Location2", "Company2", EmploymentType.PART_TIME, 1, 3, "Python, Django", "recruiter2")
+            new PostDto("Title1", "Description1", PostStatus.ACTIVE, "Location1", "Company1", EmploymentType.FULL_TIME, 2, 5, List.of("Java", "Spring"), "recruiter1"),
+            new PostDto("Title2", "Description2", PostStatus.CLOSED, "Location2", "Company2", EmploymentType.PART_TIME, 1, 3, List.of("Python", "Django"), "recruiter2")
         )
     );
     // When
@@ -71,12 +74,12 @@ public class PostControllerIntegrationTest {
   void getPosts_withFilters_happy() {
     // Given
     testRestTemplate = new TestRestTemplate("applicant", "applicant");
-    String filter = "skills=Java";
-    String url = "http://localhost:" + port + "/post?filter=" + filter;
+    PostFilterRequestDto filter = new PostFilterRequestDto(null, "Title1", "Location1", null, 0, 0, null, null);
+    String url = "http://localhost:" + port + "/post?" + filter.toString();
 
-    Mockito.when(postService.getPosts(filter)).thenReturn(
+    Mockito.when(postService.getPosts(filter,0,10)).thenReturn(
         List.of(
-            new PostDto("Title1", "Description1", PostStatus.ACTIVE, "Location1", "Company1", EmploymentType.FULL_TIME, 2, 5, "Java, Spring", "recruiter1")
+            new PostDto("Title1", "Description1", PostStatus.ACTIVE, "Location1", "Company1", EmploymentType.FULL_TIME, 2, 5, List.of("Java", "Spring"), "recruiter1")
         )
     );
     // When
@@ -121,7 +124,7 @@ public class PostControllerIntegrationTest {
     // Given
     testRestTemplate = new TestRestTemplate("recruiter", "recruiter");
     String url = "http://localhost:" + port + "/post";
-    PostDto postDto = new PostDto("Title1", "Description1", PostStatus.ACTIVE, "Location1", "Company1", EmploymentType.FULL_TIME, 2, 5, "Java, Spring",
+    PostDto postDto = new PostDto("Title1", "Description1", PostStatus.ACTIVE, "Location1", "Company1", EmploymentType.FULL_TIME, 2, 5, List.of("Java", "Spring"),
         "recruiter1");
 
     Mockito.when(postService.createPost(Mockito.any(PostDto.class))).thenReturn(postDto);
@@ -139,7 +142,7 @@ public class PostControllerIntegrationTest {
     // Given
     testRestTemplate = new TestRestTemplate("admin", "admin");
     String url = "http://localhost:" + port + "/post";
-    PostDto postDto = new PostDto("Title1", "Description1", PostStatus.ACTIVE, "Location1", "Company1", EmploymentType.FULL_TIME, 2, 5, "Java, Spring",
+    PostDto postDto = new PostDto("Title1", "Description1", PostStatus.ACTIVE, "Location1", "Company1", EmploymentType.FULL_TIME, 2, 5, List.of("Java", "Spring"),
         "recruiter1");
 
     Mockito.when(postService.createPost(postDto)).thenReturn(postDto);
@@ -156,10 +159,10 @@ public class PostControllerIntegrationTest {
 
     String url = "http://localhost:" + port + "/post/" + postId;
     PostDto oldPost = new PostDto("old Title", "old Description", PostStatus.ACTIVE, "old Location", "old Company", EmploymentType.FULL_TIME, 3,
-        6, "Java, Spring Boot", "recruiter1");
+        6, List.of("Java", "Spring Boot"), "recruiter1");
 
     PostDto postDto = new PostDto("Updated Title", "Updated Description", PostStatus.ACTIVE, "Updated Location", "Updated Company", EmploymentType.FULL_TIME, 3,
-        6, "Java, Spring Boot", "recruiter1");
+        6, List.of("Java", "Spring Boot"), "recruiter1");
 
     Mockito.when(postService.updatePost(Mockito.any(String.class), Mockito.any(PostDto.class))).thenReturn(postDto);
 

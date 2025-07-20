@@ -2,45 +2,99 @@ package com.jobfinder.finder.service;
 
 import com.jobfinder.finder.constant.PostStatus;
 import com.jobfinder.finder.dto.PostDto;
+import com.jobfinder.finder.dto.PostFilterRequestDto;
+import com.jobfinder.finder.entity.PostEntity;
+import com.jobfinder.finder.mapper.PostMapper;
+import com.jobfinder.finder.repository.PostRepository;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class PostService {
+  private final PostRepository postRepository;
+  private final PostMapper postMapper;
 
-  public List<PostDto> getPosts(String filter) {
+  public List<PostDto> getPosts(PostFilterRequestDto filter, int page, int size) {
     log.info("Fetching posts with filter: {}", filter);
-    //todo: implement filtering logic
-    if (filter != null && !filter.isEmpty()) {
+    PageRequest pageRequest = PageRequest.of(page, size);
+
+    Page<PostEntity> pageResult;
+    if (null != filter) {
       log.info("Fetching posts with filter: {}", filter);
-      return List.of();
+      Specification<PostEntity> spec = withFilters(filter);
+      pageResult = postRepository.findAll(spec, (Pageable) pageRequest);
+    } else {
+      log.info("Fetching posts without filters");
+      pageResult = postRepository.findAll(pageRequest);
     }
-    //todo: implement pagination logic
-    // todo: map the fetched posts to PostDto
-    return List.of();
+    return pageResult.stream().map(postMapper::toDto).filter(dto -> !dto.getStatus().equals(PostStatus.SUSPENDED)).toList();
   }
 
   public PostDto createPost(PostDto dto) {
     log.info("Creating a new post with data: {}", dto);
-    //todo: map to entity and save to database
+    postRepository.save(postMapper.toEntity(dto));
     return dto;
   }
 
   public PostDto updatePost(String postId, PostDto dto) {
     log.info("Updating post with ID: {} with data: {}", postId, dto);
-    //todo:: map to entity and update in database
+    PostEntity existingPost = postRepository.findById(Long.valueOf(postId))
+        .orElseThrow(() -> new IllegalArgumentException("Post not found with ID: " + postId));
+    PostEntity entity = postMapper.toEntity(dto);
+    entity.setId(existingPost.getId());
+    postRepository.save(entity);
     return dto;
   }
 
   public void patchPostStatus(String postId, PostStatus status) {
     log.info("Update post status with ID: {} to {}", postId, status);
-    //map to entity and update in database
+    PostEntity existingPost = postRepository.findById(Long.valueOf(postId))
+        .orElseThrow(() -> new IllegalArgumentException("Post not found with ID: " + postId));
+    existingPost.setStatus(status);
+    postRepository.save(existingPost);
   }
 
   public void deletePost(String postId) {
     log.info("Deleting a post with ID: {}", postId);
-    //delete from database
+    PostEntity existingPost = postRepository.findById(Long.valueOf(postId))
+        .orElseThrow(() -> new IllegalArgumentException("Post not found with ID: " + postId));
+    existingPost.setStatus(PostStatus.SUSPENDED);
+    postRepository.save(existingPost);
+  }
+
+  private Specification<PostEntity> withFilters(PostFilterRequestDto filter) {
+    return (root, query, criteriaBuilder) -> {
+      assert query != null;
+      if(filter.getLocation() != null){
+        query.where(criteriaBuilder.like(root.get("location"), "%" + filter.getLocation() + "%"));
+      }
+      if(filter.getTitle() != null){
+        query.where(criteriaBuilder.like(root.get("title"), "%" + filter.getTitle() + "%"));
+      }
+      if(filter.getCompanyName() != null){
+        query.where(criteriaBuilder.like(root.get("companyName"), "%" + filter.getCompanyName() + "%"));
+      }
+      if(filter.getEmploymentType() != null){
+        query.where(criteriaBuilder.equal(root.get("employmentType"), filter.getEmploymentType()));
+      }
+      if (filter.getMinExperience() != 0) {
+        query.where(criteriaBuilder.greaterThanOrEqualTo(root.get("minimumExperience"), filter.getMinExperience()));
+      }
+      if (filter.getMaxExperience() != 0) {
+        query.where(criteriaBuilder.lessThanOrEqualTo(root.get("maximumExperience"), filter.getMaxExperience()));
+      }
+      if(!filter.getSkillsRequired().isEmpty()){
+        query.where(criteriaBuilder.isTrue(root.get("skillsRequired").in(filter.getSkillsRequired())));
+      }
+      return criteriaBuilder.conjunction(); // Return an empty conjunction for now
+    };
   }
 }
