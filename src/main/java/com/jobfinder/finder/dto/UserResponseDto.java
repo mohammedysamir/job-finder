@@ -1,5 +1,6 @@
 package com.jobfinder.finder.dto;
 
+import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,5 +18,6 @@ public class UserResponseDto {
   private String lastName;
   private List<String> phoneNumber;
   private List<AddressDto> address;
+  private LocalDate dateOfBirth; // Format: "yyyy-MM-dd"
   private String profilePictureUrl;
 }

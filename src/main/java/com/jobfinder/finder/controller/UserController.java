@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -41,8 +42,8 @@ public class UserController {
       summary = "Register a new user",
       description = "Endpoint to register a new user in the system. The user must provide valid registration details including username, password, and other required fields."
   )
-  @PostMapping
-  public ResponseEntity<UserResponseDto> registerUser(@RequestBody UserRegistrationDto dto) {
+  @PostMapping("/register")
+  public ResponseEntity<UserResponseDto> registerUser(@RequestBody @Valid UserRegistrationDto dto) {
     log.info("Registering a new user:{}", dto.toString());
     return new ResponseEntity<>(userService.registerUser(dto), HttpStatus.CREATED);
   }
