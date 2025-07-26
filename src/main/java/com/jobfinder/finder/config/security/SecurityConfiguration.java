@@ -25,6 +25,7 @@ public class SecurityConfiguration {
                     .requestMatchers("/actuator/**").hasAnyRole(Roles.SUPER_ADMIN.name(), Roles.ADMIN.name()) // Allow access to actuator endpoints to admins
                     .requestMatchers("/admin/**").hasRole(Roles.SUPER_ADMIN.name())
                     //-- User related endpoints
+                    .requestMatchers(HttpMethod.DELETE, "/user/**").hasAnyRole(Roles.SUPER_ADMIN.name(), Roles.ADMIN.name(), Roles.APPLICANT.name())
                     .requestMatchers("/user/**").hasAnyRole(Roles.APPLICANT.name())
                     //-- Post related endpoints
                     .requestMatchers(HttpMethod.DELETE, "/post/**")
