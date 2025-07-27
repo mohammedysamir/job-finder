@@ -1,13 +1,16 @@
 package com.jobfinder.finder.controller;
 
 import com.jobfinder.finder.constant.PostStatus;
-import com.jobfinder.finder.dto.PostDto;
-import com.jobfinder.finder.dto.PostFilterRequestDto;
+import com.jobfinder.finder.dto.post.PostDto;
+import com.jobfinder.finder.dto.post.PostFilterRequestDto;
+import com.jobfinder.finder.dto.submission.SubmissionRequestDto;
+import com.jobfinder.finder.dto.submission.SubmissionResponseDto;
 import com.jobfinder.finder.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -108,5 +111,4 @@ public class PostController {
     postService.deletePost(postId);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
-
 }

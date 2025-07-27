@@ -1,6 +1,6 @@
 package com.jobfinder.finder.mapper;
 
-import com.jobfinder.finder.dto.PostDto;
+import com.jobfinder.finder.dto.post.PostDto;
 import com.jobfinder.finder.entity.PostEntity;
 import org.mapstruct.Mapper;
 

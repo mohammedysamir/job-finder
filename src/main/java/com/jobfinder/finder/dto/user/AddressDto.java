@@ -1,4 +1,4 @@
-package com.jobfinder.finder.dto;
+package com.jobfinder.finder.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class AdminResponseDto {
-  private String username;
-  private String email;
+public class AddressDto {
+  private String country;
+  private String city;
+  private String postalCode;
 }

@@ -1,4 +1,4 @@
-package com.jobfinder.finder.dto;
+package com.jobfinder.finder.dto.user;
 
 import java.time.LocalDate;
 import java.util.List;

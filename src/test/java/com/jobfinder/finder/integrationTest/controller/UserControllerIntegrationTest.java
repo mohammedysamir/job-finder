@@ -2,10 +2,10 @@ package com.jobfinder.finder.integrationTest.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jobfinder.finder.controller.UserController;
-import com.jobfinder.finder.dto.AddressDto;
-import com.jobfinder.finder.dto.UserPatchDto;
-import com.jobfinder.finder.dto.UserRegistrationDto;
-import com.jobfinder.finder.dto.UserResponseDto;
+import com.jobfinder.finder.dto.user.AddressDto;
+import com.jobfinder.finder.dto.user.UserPatchDto;
+import com.jobfinder.finder.dto.user.UserRegistrationDto;
+import com.jobfinder.finder.dto.user.UserResponseDto;
 import com.jobfinder.finder.integrationTest.configuration.MockUserDetailsManagerConfig;
 import com.jobfinder.finder.service.UserService;
 import com.jobfinder.finder.validator.PhoneNumberValidator;

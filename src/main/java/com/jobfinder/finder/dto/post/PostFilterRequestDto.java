@@ -1,4 +1,4 @@
-package com.jobfinder.finder.dto;
+package com.jobfinder.finder.dto.post;
 
 import com.jobfinder.finder.constant.EmploymentType;
 import java.util.List;

@@ -1,8 +1,8 @@
 package com.jobfinder.finder.mapper;
 
-import com.jobfinder.finder.dto.UserPatchDto;
-import com.jobfinder.finder.dto.UserRegistrationDto;
-import com.jobfinder.finder.dto.UserResponseDto;
+import com.jobfinder.finder.dto.user.UserPatchDto;
+import com.jobfinder.finder.dto.user.UserRegistrationDto;
+import com.jobfinder.finder.dto.user.UserResponseDto;
 import com.jobfinder.finder.entity.UserEntity;
 import org.mapstruct.Mapper;
 

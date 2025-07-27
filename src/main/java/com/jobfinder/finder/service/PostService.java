@@ -1,8 +1,8 @@
 package com.jobfinder.finder.service;
 
 import com.jobfinder.finder.constant.PostStatus;
-import com.jobfinder.finder.dto.PostDto;
-import com.jobfinder.finder.dto.PostFilterRequestDto;
+import com.jobfinder.finder.dto.post.PostDto;
+import com.jobfinder.finder.dto.post.PostFilterRequestDto;
 import com.jobfinder.finder.entity.PostEntity;
 import com.jobfinder.finder.mapper.PostMapper;
 import com.jobfinder.finder.repository.PostRepository;
@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 

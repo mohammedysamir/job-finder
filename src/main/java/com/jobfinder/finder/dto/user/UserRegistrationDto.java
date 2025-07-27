@@ -1,4 +1,4 @@
-package com.jobfinder.finder.dto;
+package com.jobfinder.finder.dto.user;
 
 import com.jobfinder.finder.validator.ValidPhoneNumber;
 import jakarta.validation.constraints.Email;

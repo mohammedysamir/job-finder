@@ -2,9 +2,9 @@ package com.jobfinder.finder.integrationTest.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jobfinder.finder.controller.AdminController;
-import com.jobfinder.finder.dto.AdminCreationDto;
-import com.jobfinder.finder.dto.AdminPatchDto;
-import com.jobfinder.finder.dto.AdminResponseDto;
+import com.jobfinder.finder.dto.admin.AdminCreationDto;
+import com.jobfinder.finder.dto.admin.AdminPatchDto;
+import com.jobfinder.finder.dto.admin.AdminResponseDto;
 import com.jobfinder.finder.integrationTest.configuration.MockUserDetailsManagerConfig;
 import com.jobfinder.finder.service.AdminService;
 import org.junit.jupiter.api.BeforeEach;

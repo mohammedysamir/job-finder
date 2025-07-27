@@ -1,13 +1,12 @@
 package com.jobfinder.finder.service;
 
-import com.jobfinder.finder.dto.UserPatchDto;
-import com.jobfinder.finder.dto.UserRegistrationDto;
-import com.jobfinder.finder.dto.UserResponseDto;
+import com.jobfinder.finder.dto.user.UserPatchDto;
+import com.jobfinder.finder.dto.user.UserRegistrationDto;
+import com.jobfinder.finder.dto.user.UserResponseDto;
 import com.jobfinder.finder.entity.UserEntity;
 import com.jobfinder.finder.mapper.UserMapper;
 import com.jobfinder.finder.repository.UserRepository;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;

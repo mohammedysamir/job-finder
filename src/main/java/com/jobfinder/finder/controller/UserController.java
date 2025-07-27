@@ -1,8 +1,8 @@
 package com.jobfinder.finder.controller;
 
-import com.jobfinder.finder.dto.UserPatchDto;
-import com.jobfinder.finder.dto.UserRegistrationDto;
-import com.jobfinder.finder.dto.UserResponseDto;
+import com.jobfinder.finder.dto.user.UserPatchDto;
+import com.jobfinder.finder.dto.user.UserRegistrationDto;
+import com.jobfinder.finder.dto.user.UserResponseDto;
 import com.jobfinder.finder.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

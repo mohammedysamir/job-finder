@@ -1,4 +1,4 @@
-package com.jobfinder.finder.dto;
+package com.jobfinder.finder.dto.admin;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

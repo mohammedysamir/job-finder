@@ -1,8 +1,8 @@
 package com.jobfinder.finder.controller;
 
-import com.jobfinder.finder.dto.AdminCreationDto;
-import com.jobfinder.finder.dto.AdminPatchDto;
-import com.jobfinder.finder.dto.AdminResponseDto;
+import com.jobfinder.finder.dto.admin.AdminCreationDto;
+import com.jobfinder.finder.dto.admin.AdminPatchDto;
+import com.jobfinder.finder.dto.admin.AdminResponseDto;
 import com.jobfinder.finder.service.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

@@ -1,8 +1,8 @@
 package com.jobfinder.finder.service;
 
-import com.jobfinder.finder.dto.AdminCreationDto;
-import com.jobfinder.finder.dto.AdminPatchDto;
-import com.jobfinder.finder.dto.AdminResponseDto;
+import com.jobfinder.finder.dto.admin.AdminCreationDto;
+import com.jobfinder.finder.dto.admin.AdminPatchDto;
+import com.jobfinder.finder.dto.admin.AdminResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
