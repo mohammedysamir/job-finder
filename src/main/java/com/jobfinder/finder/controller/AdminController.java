@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -103,7 +104,7 @@ public class AdminController {
       description = "Updates the details of an admin by their username."
   )
   @PatchMapping("/{username}")
-  public ResponseEntity<AdminResponseDto> updateAdmin(@PathVariable String username, AdminPatchDto dto) {
+  public ResponseEntity<AdminResponseDto> updateAdmin(@PathVariable String username, @Valid @RequestBody AdminPatchDto dto) {
     log.info("Patching an admin with username: {} with data: {}", username, dto.toString());
     return new ResponseEntity<>(adminService.updateAdmin(username, dto), HttpStatus.OK);
   }
@@ -133,7 +134,7 @@ public class AdminController {
       description = "Creates a new admin with the provided details."
   )
   @PostMapping
-  public ResponseEntity<AdminResponseDto> createAdmin(@RequestBody AdminCreationDto dto) {
+  public ResponseEntity<AdminResponseDto> createAdmin(@RequestBody @Valid AdminCreationDto dto) {
     log.info("Creating an admin: {}", dto.toString());
     return new ResponseEntity<>(adminService.createAdmin(dto), HttpStatus.CREATED);
   }

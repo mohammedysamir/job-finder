@@ -23,7 +23,8 @@ public class SecurityConfiguration {
                 c.requestMatchers("/login", "/register").permitAll() // Allow public access to login and register
                     //-- Admin related endpoints
                     .requestMatchers("/actuator/**").hasAnyRole(Roles.SUPER_ADMIN.name(), Roles.ADMIN.name()) // Allow access to actuator endpoints to admins
-                    .requestMatchers("/admin/**").hasRole(Roles.SUPER_ADMIN.name())
+                    .requestMatchers(HttpMethod.DELETE,"/admin/**").hasRole(Roles.SUPER_ADMIN.name())
+                    .requestMatchers("/admin/**").hasAnyRole(Roles.SUPER_ADMIN.name(), Roles.ADMIN.name())
                     //-- User related endpoints
                     .requestMatchers(HttpMethod.DELETE, "/user/**").hasAnyRole(Roles.SUPER_ADMIN.name(), Roles.ADMIN.name(), Roles.APPLICANT.name())
                     .requestMatchers("/user/**").hasAnyRole(Roles.APPLICANT.name())

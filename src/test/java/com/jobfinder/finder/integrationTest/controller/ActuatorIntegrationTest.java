@@ -1,4 +1,4 @@
-package com.jobfinder.finder.integrationTest;
+package com.jobfinder.finder.integrationTest.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

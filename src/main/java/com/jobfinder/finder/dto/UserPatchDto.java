@@ -1,7 +1,6 @@
 package com.jobfinder.finder.dto;
 
 import com.jobfinder.finder.validator.ValidPhoneNumber;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.List;
