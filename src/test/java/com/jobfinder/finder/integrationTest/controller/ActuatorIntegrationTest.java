@@ -1,32 +1,45 @@
 package com.jobfinder.finder.integrationTest.controller;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT, properties = "server.port=8081")
-@EnableAutoConfiguration(exclude = {RabbitAutoConfiguration.class})
-class ActuatorIntegrationTest {
-  TestRestTemplate restTemplate = new TestRestTemplate();
-  @LocalServerPort
-  int port;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+@EnableAutoConfiguration(exclude = {RabbitAutoConfiguration.class, RedisAutoConfiguration.class}) //todo: validate if excluding is necessary
+class ActuatorIntegrationTest extends FinderIntegrationTestInitiator {
+
+  @Autowired
+  MockMvc mockMvc;
 
   @Test
-  @WithMockUser(username = "user", password = "password")
-  void actuatorEndpointsAreAccessible() {
-    String baseUrl = "http://localhost:" + port + "/actuator";
+  @WithUserDetails("admin")
+  void actuatorEndpointsAreAccessible() throws Exception {
+    mockMvc.perform(
+            MockMvcRequestBuilders.get("/actuator/health")
+        )
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.status").value("UP"));
 
-    // Check if the health endpoint is accessible
-    String healthResponse = restTemplate.getForObject(baseUrl + "/health", String.class);
-    assert healthResponse != null && healthResponse.contains("UP");
-
-    // Check if the info endpoint is accessible
-    String infoResponse = restTemplate.getForObject(baseUrl + "/info", String.class);
-    assert infoResponse != null;
+    mockMvc.perform(
+            MockMvcRequestBuilders.get("/actuator/info")
+        )
+        .andExpect(status().isOk());
   }
 }
