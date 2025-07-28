@@ -6,6 +6,7 @@ import com.jobfinder.finder.dto.post.PostFilterRequestDto;
 import com.jobfinder.finder.entity.PostEntity;
 import com.jobfinder.finder.mapper.PostMapper;
 import com.jobfinder.finder.repository.PostRepository;
+import jakarta.persistence.criteria.Predicate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,28 +73,43 @@ public class PostService {
   private Specification<PostEntity> withFilters(PostFilterRequestDto filter) {
     return (root, query, criteriaBuilder) -> {
       assert query != null;
-      if(filter.getLocation() != null){
-        query.where(criteriaBuilder.like(root.get("location"), "%" + filter.getLocation() + "%"));
+      Predicate predicates = criteriaBuilder.conjunction();
+      if (filter.getLocation() != null) {
+        predicates.getExpressions().add(
+            criteriaBuilder.equal(root.get("location"), filter.getLocation())
+        );
       }
-      if(filter.getTitle() != null){
-        query.where(criteriaBuilder.like(root.get("title"), "%" + filter.getTitle() + "%"));
+      if (filter.getTitle() != null) {
+        predicates.getExpressions().add(
+            criteriaBuilder.equal(root.get("title"), filter.getTitle())
+        );
       }
-      if(filter.getCompanyName() != null){
-        query.where(criteriaBuilder.like(root.get("companyName"), "%" + filter.getCompanyName() + "%"));
+      if (filter.getCompanyName() != null) {
+        predicates.getExpressions().add(
+            criteriaBuilder.equal(root.get("companyName"), filter.getCompanyName())
+        );
       }
-      if(filter.getEmploymentType() != null){
-        query.where(criteriaBuilder.equal(root.get("employmentType"), filter.getEmploymentType()));
+      if (filter.getEmploymentType() != null) {
+        predicates.getExpressions().add(
+            criteriaBuilder.equal(root.get("employmentType"), filter.getEmploymentType())
+        );
       }
       if (filter.getMinExperience() != 0) {
-        query.where(criteriaBuilder.greaterThanOrEqualTo(root.get("minimumExperience"), filter.getMinExperience()));
+        predicates.getExpressions().add(
+            criteriaBuilder.equal(root.get("minimumExperience"), filter.getMinExperience())
+        );
       }
       if (filter.getMaxExperience() != 0) {
-        query.where(criteriaBuilder.lessThanOrEqualTo(root.get("maximumExperience"), filter.getMaxExperience()));
+        predicates.getExpressions().add(
+            criteriaBuilder.equal(root.get("maximumExperience"), filter.getMaxExperience())
+        );
       }
-      if(!filter.getSkillsRequired().isEmpty()){
-        query.where(criteriaBuilder.isTrue(root.get("skillsRequired").in(filter.getSkillsRequired())));
+      if (!filter.getSkillsRequired().isEmpty()) {
+        predicates.getExpressions().add(
+            root.get("skillsRequired").in(filter.getSkillsRequired())
+        );
       }
-      return criteriaBuilder.conjunction(); // Return an empty conjunction for now
+      return predicates; // Return an empty conjunction for now
     };
   }
 }

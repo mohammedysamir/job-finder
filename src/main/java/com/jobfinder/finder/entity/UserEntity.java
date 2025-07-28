@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -43,7 +44,12 @@ public class UserEntity {
   private String lastName;
   @OneToMany(mappedBy = "username")
   @NotEmpty
-  private List<PhoneNumberEntity> phoneNumbers;
+  @JoinTable(
+      name = "user_phone_numbers",
+      joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "phone_number_id")
+  )
+  private List<String> phoneNumbers;
   @OneToMany(mappedBy = "username")
   @NotEmpty
   private List<AddressEntity> addresses;
