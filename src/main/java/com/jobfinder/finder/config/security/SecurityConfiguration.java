@@ -23,7 +23,7 @@ public class SecurityConfiguration {
                 c.requestMatchers("/login", "/register").permitAll() // Allow public access to login and register
                     //-- Admin related endpoints
                     .requestMatchers("/actuator/**").hasAnyRole(Roles.SUPER_ADMIN.name(), Roles.ADMIN.name()) // Allow access to actuator endpoints to admins
-                    .requestMatchers(HttpMethod.DELETE,"/admin/**").hasRole(Roles.SUPER_ADMIN.name())
+                    .requestMatchers(HttpMethod.DELETE, "/admin/**").hasRole(Roles.SUPER_ADMIN.name())
                     .requestMatchers("/admin/**").hasAnyRole(Roles.SUPER_ADMIN.name(), Roles.ADMIN.name())
                     //-- User related endpoints
                     .requestMatchers(HttpMethod.DELETE, "/user/**").hasAnyRole(Roles.SUPER_ADMIN.name(), Roles.ADMIN.name(), Roles.APPLICANT.name())
@@ -36,6 +36,10 @@ public class SecurityConfiguration {
                     .requestMatchers(HttpMethod.GET, "/post/**").hasAnyRole(Roles.APPLICANT.name())
                     .requestMatchers(HttpMethod.POST, "/post/**").hasAnyRole(Roles.RECRUITER.name())
                     .requestMatchers(HttpMethod.PATCH, "/post/**").hasAnyRole(Roles.RECRUITER.name())
+                    //-- Submission related endpoints
+                    .requestMatchers(HttpMethod.POST, "/submit").hasRole(Roles.APPLICANT.name())
+                    .requestMatchers(HttpMethod.GET, "/submit").hasAnyRole(Roles.APPLICANT.name(), Roles.RECRUITER.name())
+                    .requestMatchers(HttpMethod.PATCH, "/submit/**").hasRole(Roles.RECRUITER.name())
                     .anyRequest().authenticated() // Require authentication for all other requests
         ).build();
   }

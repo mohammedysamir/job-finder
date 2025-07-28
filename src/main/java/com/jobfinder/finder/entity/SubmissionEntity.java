@@ -9,13 +9,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity(name = "submission")
 @AllArgsConstructor
 @Getter
+@Setter
 public class SubmissionEntity {
   @GeneratedValue(strategy = GenerationType.UUID)
   @Id
@@ -23,8 +27,9 @@ public class SubmissionEntity {
   @NotBlank
   @Column(unique = true)
   private String username;
-  @NotBlank
-  private String postId;
+  @NotNull
+  @Positive
+  private Long postId;
   private String coverLetter;
   @NotBlank
   private String resumeUrl;
