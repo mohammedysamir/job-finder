@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface SubmissionMapper {
   SubmissionEntity toEntity(SubmissionRequestDto dto);
 

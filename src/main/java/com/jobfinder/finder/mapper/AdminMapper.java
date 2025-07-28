@@ -5,7 +5,7 @@ import com.jobfinder.finder.dto.admin.AdminResponseDto;
 import com.jobfinder.finder.entity.AdminEntity;
 import org.mapstruct.Mapper;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface AdminMapper {
   AdminEntity toEntity(AdminCreationDto adminCreationDto);
 
