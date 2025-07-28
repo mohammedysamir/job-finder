@@ -1,60 +1,25 @@
 package com.jobfinder.finder.integrationTest.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jobfinder.finder.controller.AdminController;
 import com.jobfinder.finder.dto.admin.AdminCreationDto;
 import com.jobfinder.finder.dto.admin.AdminPatchDto;
 import com.jobfinder.finder.dto.admin.AdminResponseDto;
-import com.jobfinder.finder.integrationTest.configuration.MockUserDetailsManagerConfig;
 import com.jobfinder.finder.service.AdminService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import(MockUserDetailsManagerConfig.class)
 @WebMvcTest(AdminController.class)
-@EnableAutoConfiguration(exclude = {
-    org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration.class,
-    org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration.class,
-    RedisAutoConfiguration.class
-})
-@ActiveProfiles("test")
-public class AdminControllerIntegrationTest {
-  @Autowired
-  WebApplicationContext context;
-
-  @Autowired
-  MockMvc mockMvc;
-
-  @Autowired
-  ObjectMapper objectMapper;
+public class AdminControllerIntegrationTest extends FinderIntegrationTestInitiator{
 
   @MockBean
   private AdminService adminService;
-
-  @BeforeEach
-  void setUp() {
-    mockMvc = MockMvcBuilders
-        .webAppContextSetup(context)
-        .apply(springSecurity())
-        .build();
-  }
 
   //-- Get Admin Tests ---
   @Test

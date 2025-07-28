@@ -31,36 +31,12 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import(MockUserDetailsManagerConfig.class)
 @WebMvcTest(UserController.class)
-@EnableAutoConfiguration(exclude = {
-    org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration.class,
-    org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration.class,
-    RedisAutoConfiguration.class
-})
-@ActiveProfiles("test")
-public class UserControllerIntegrationTest {
-  @Autowired
-  WebApplicationContext context;
-
-  @Autowired
-  MockMvc mockMvc;
-
-  @Autowired
-  ObjectMapper objectMapper;
-
+public class UserControllerIntegrationTest extends FinderIntegrationTestInitiator {
   PhoneNumberValidator phoneNumberValidator = new PhoneNumberValidator();
 
   @MockBean
   private UserService userService;
-
-  @BeforeEach
-  void setUp() {
-    mockMvc = MockMvcBuilders
-        .webAppContextSetup(context)
-        .apply(springSecurity())
-        .build();
-  }
 
   @Test
   @WithUserDetails("applicant")
