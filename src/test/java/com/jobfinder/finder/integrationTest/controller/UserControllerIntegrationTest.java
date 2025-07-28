@@ -52,7 +52,7 @@ public class UserControllerIntegrationTest extends FinderIntegrationTestInitiato
     LocalDate dob = LocalDate.of(2000, 1, 1); // Example date of birth
     String imageUrl = "dummyUrl";
     UserRegistrationDto userRegistrationDto = new UserRegistrationDto(username, password, email, firstName, lastName, phoneNumbers, List.of(address), dob,
-        imageUrl);
+        imageUrl, "applicant");
     UserResponseDto response = new UserResponseDto(username, email, firstName, lastName, phoneNumbers, List.of(address), dob, imageUrl);
     Mockito.when(userService.registerUser(Mockito.any(UserRegistrationDto.class))).thenReturn(
         response
@@ -83,14 +83,28 @@ public class UserControllerIntegrationTest extends FinderIntegrationTestInitiato
     LocalDate dob = LocalDate.of(2000, 1, 1); // Example date of birth
     String imageUrl = "dummyUrl";
     UserRegistrationDto userRegistrationDto = new UserRegistrationDto(null, password, email, firstName, lastName, phoneNumbers, List.of(address), dob,
-        imageUrl);
-    /*
-    UserResponseDto response = new UserResponseDto(username, email, firstName, lastName, phoneNumbers, List.of(address), dob, imageUrl);
-    Mockito.when(userService.registerUser(Mockito.any(UserRegistrationDto.class))).thenReturn(
-        response
-    );
-
-     */
+        imageUrl, "applicant");
+    // When
+    mockMvc.perform(
+        MockMvcRequestBuilders.post("/user/register")
+            .content(objectMapper.writeValueAsString(userRegistrationDto))
+            .contentType("application/json")
+    ).andExpect(status().isBadRequest());
+  }
+  @Test
+  @WithUserDetails("applicant")
+  void registerUser_permitAll_invalidRole_400() throws Exception {
+    // Given
+    List<String> phoneNumbers = List.of("+201129550094");
+    AddressDto address = new AddressDto("Egypt", "Giza", "12511");
+    String email = "applicant@gmail.com";
+    String firstName = "app";
+    String lastName = "lastName";
+    String password = "password123";
+    LocalDate dob = LocalDate.of(2000, 1, 1); // Example date of birth
+    String imageUrl = "dummyUrl";
+    UserRegistrationDto userRegistrationDto = new UserRegistrationDto(null, password, email, firstName, lastName, phoneNumbers, List.of(address), dob,
+        imageUrl, "admin");
     // When
     mockMvc.perform(
         MockMvcRequestBuilders.post("/user/register")

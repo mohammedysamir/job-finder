@@ -6,6 +6,7 @@ import com.jobfinder.finder.dto.user.UserResponseDto;
 import com.jobfinder.finder.entity.UserEntity;
 import com.jobfinder.finder.mapper.UserMapper;
 import com.jobfinder.finder.repository.UserRepository;
+import jakarta.validation.Valid;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,8 +23,27 @@ public class UserService {
     this.userMapper = userMapper;
   }
 
+
+  public UserResponseDto loginUser(@Valid UserRegistrationDto dto) {
+    log.info("Logging in user: {}", dto.toString());
+    Optional<UserEntity> optionalUserEntity = userRepository.findByUsernameOrEmail(dto.getUsername(), dto.getEmail());
+    if (optionalUserEntity.isPresent()) {
+      UserEntity userEntity = optionalUserEntity.get();
+      //todo: Here you would typically check the password, but for simplicity, we assume it's correct
+      return userMapper.toDto(userEntity);
+    } else {
+      log.warn("User with username/email not found");
+      throw new UsernameNotFoundException("User not found with username/email: " + dto.getUsername() + " or " + dto.getEmail());
+    }
+  }
+
   public UserResponseDto registerUser(UserRegistrationDto dto) {
     log.info("Registering a new user: {}", dto.toString());
+    if (!dto.getRole().equalsIgnoreCase("APPLICANT") && !dto.getRole().equalsIgnoreCase("RECRUITER")) {
+      log.error("Invalid role provided: {}", dto.getRole());
+      throw new IllegalArgumentException("Invalid role provided: " + dto.getRole());
+    }
+
     UserEntity entity = userMapper.toEntity(dto);
     userRepository.save(entity);
     return userMapper.toDto(entity);
@@ -67,4 +87,5 @@ public class UserService {
       throw new UsernameNotFoundException("User not found with username: " + username);
     }
   }
+
 }

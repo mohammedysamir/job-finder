@@ -33,6 +33,24 @@ public class UserController {
 
   @ApiResponses(
       value = {
+          @ApiResponse(responseCode = "200", description = "User logged in successfully"),
+          @ApiResponse(responseCode = "400", description = "Invalid input data"),
+          @ApiResponse(responseCode = "401", description = "Unauthorized access"),
+          @ApiResponse(responseCode = "500", description = "Internal server error")
+      }
+  )
+  @Operation(
+      summary = "User Login",
+      description = "Endpoint for user login. The user must provide valid credentials including username and password."
+  )
+  @PostMapping("/login")
+  public ResponseEntity<UserResponseDto> loginUser(@RequestBody @Valid UserRegistrationDto dto) {
+    log.info("Logging in user:{}", dto.toString());
+    return new ResponseEntity<>(userService.loginUser(dto), HttpStatus.OK);
+  }
+
+  @ApiResponses(
+      value = {
           @ApiResponse(responseCode = "201", description = "User registered successfully"),
           @ApiResponse(responseCode = "400", description = "Invalid input data"),
           @ApiResponse(responseCode = "500", description = "Internal server error")
@@ -78,7 +96,8 @@ public class UserController {
       description = "Endpoint to update the profile of a user by their username. The user can update fields such as email, phone number, and other profile details."
   )
   @PatchMapping("/{username}/profile")
-  public ResponseEntity<UserResponseDto> updateUserProfile(@PathVariable String username, @RequestBody UserPatchDto dto) { //todo: add ABAC security with PreAuthorize
+  public ResponseEntity<UserResponseDto> updateUserProfile(@PathVariable String username,
+      @RequestBody UserPatchDto dto) { //todo: add ABAC security with PreAuthorize
     log.info("Updating user profile for username: {} with data: {}", username, dto.toString());
     return new ResponseEntity<>(userService.updateUserProfile(username, dto), HttpStatus.OK);
   }

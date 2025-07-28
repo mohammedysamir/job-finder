@@ -1,5 +1,6 @@
 package com.jobfinder.finder.entity;
 
+import com.jobfinder.finder.constant.Roles;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,7 +21,7 @@ import lombok.Setter;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-//todo: create index on username and email
+//todo: create index on username and email and Roles
 @Entity(name = "user")
 @AllArgsConstructor
 @Getter
@@ -29,35 +30,47 @@ public class UserEntity {
   @GeneratedValue(strategy = IDENTITY)
   @Id
   private Long id;
+
   @NotBlank
   @Column(unique = true)
   private String username;
+
   @NotBlank
   private String password;
+
   @Email
   @NotBlank
   @Column(unique = true)
   private String email;
+
   @NotBlank
   private String firstName;
+
   @NotBlank
   private String lastName;
-  @OneToMany(mappedBy = "username")
+
   @NotEmpty
   @JoinTable(
       name = "user_phone_numbers",
-      joinColumns = @JoinColumn(name = "user_id"),
-      inverseJoinColumns = @JoinColumn(name = "phone_number_id")
+      joinColumns = @JoinColumn(name = "id"),
+      inverseJoinColumns = @JoinColumn(name = "phone_number")
   )
   private List<String> phoneNumbers;
+
   @OneToMany(mappedBy = "username")
   @NotEmpty
   private List<AddressEntity> addresses;
+
   @Past
   @NotNull
   private LocalDate dateOfBirth;
+
   @NotBlank
   private String imageUrl;
+
   @OneToMany(mappedBy = "username")
   List<SubmissionEntity> submissions;
+
+  @NotNull
+  Roles role; // "Applicant" or "Recruiter"
 }
