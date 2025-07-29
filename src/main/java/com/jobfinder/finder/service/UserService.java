@@ -6,10 +6,10 @@ import com.jobfinder.finder.dto.user.UserResponseDto;
 import com.jobfinder.finder.entity.UserEntity;
 import com.jobfinder.finder.mapper.UserMapper;
 import com.jobfinder.finder.repository.UserRepository;
-import io.netty.channel.ChannelHandler.Sharable;
 import jakarta.validation.Valid;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,6 @@ public class UserService {
     this.userMapper = userMapper;
   }
 
-  @Cacheable
   public UserResponseDto loginUser(@Valid UserRegistrationDto dto) {
     log.info("Logging in user: {}", dto.toString());
     Optional<UserEntity> optionalUserEntity = userRepository.findByUsernameOrEmail(dto.getUsername(), dto.getEmail());
@@ -80,6 +79,7 @@ public class UserService {
     }
   }
 
+  @CacheEvict(key = "#username")
   public void deleteUser(String username) {
     log.info("Deleting a user for username: {}", username);
     Optional<UserEntity> optionalUserEntity = userRepository.findByUsername(username);

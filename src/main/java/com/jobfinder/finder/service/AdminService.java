@@ -10,6 +10,8 @@ import com.jobfinder.finder.mapper.AdminMapper;
 import com.jobfinder.finder.repository.AdminRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -22,12 +24,14 @@ public class AdminService {
 
   private static final String ADMIN_NOT_FOUND_MESSAGE = "No admin was found with this username: ";
 
+  @Cacheable(key = "#username")
   public AdminResponseDto getAdmin(String username) {
     log.info("Fetching admin details for username: {}", username);
     AdminEntity adminEntity = adminRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(ADMIN_NOT_FOUND_MESSAGE + username));
     return adminMapper.toDto(adminEntity);
   }
 
+  @CacheEvict(key = "#username")
   public void deleteAdmin(String username) {
     log.info("Deleting an admin with username: {}", username);
     AdminEntity adminEntity = adminRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(ADMIN_NOT_FOUND_MESSAGE + username));

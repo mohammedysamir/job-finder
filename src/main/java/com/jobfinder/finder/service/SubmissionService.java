@@ -33,7 +33,7 @@ public class SubmissionService {
   private final PostRepository postRepository;
   private final SubmissionMapper submissionMapper;
 
-  @Cacheable
+  @Cacheable(key = "#filter.toString() + #page + #size")
   public List<SubmissionResponseDto> getSubmission(SubmissionFilterRequestDto filter, int page, int size) {
     log.info("Fetching posts with filter: {}", filter);
     PageRequest pageRequest = PageRequest.of(page, size);

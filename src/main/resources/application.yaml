@@ -18,8 +18,7 @@ spring:
     port: 6379
     password: k9ruHDmGiXw5N3X9ZubS
     timeout: 2000
-    ttl:
-      days: 1
+    ttl: 5
     database: 0
     enabled: true
 

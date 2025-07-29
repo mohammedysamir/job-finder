@@ -10,6 +10,7 @@ import jakarta.persistence.criteria.Predicate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,7 +24,7 @@ public class PostService {
   private final PostRepository postRepository;
   private final PostMapper postMapper;
 
-  @Cacheable
+  @Cacheable(key = "#filter.getPostId().toString() + #page + #size")
   public List<PostDto> getPosts(PostFilterRequestDto filter, int page, int size) {
     log.info("Fetching posts with filter: {}", filter);
     PageRequest pageRequest = PageRequest.of(page, size);
@@ -64,6 +65,7 @@ public class PostService {
     postRepository.save(existingPost);
   }
 
+  @CacheEvict(key = "#postId")
   public void deletePost(String postId) {
     log.info("Deleting a post with ID: {}", postId);
     PostEntity existingPost = postRepository.findById(Long.valueOf(postId))
