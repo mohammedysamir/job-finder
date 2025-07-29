@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(
@@ -20,6 +21,7 @@ import lombok.Getter;
     }
 )
 @Getter
+@Setter
 @AllArgsConstructor
 public class AdminEntity {
   @GeneratedValue(strategy = GenerationType.AUTO)
