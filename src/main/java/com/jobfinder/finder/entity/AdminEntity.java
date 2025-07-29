@@ -5,12 +5,20 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@Entity(name = "admin")
+@Entity
+@Table(
+    name = "admin",
+    indexes = {
+        @jakarta.persistence.Index(name = "idx_admin_username", columnList = "username", unique = true),
+        @jakarta.persistence.Index(name = "idx_admin_email", columnList = "email", unique = true)
+    }
+)
 @Getter
 @AllArgsConstructor
 public class AdminEntity {

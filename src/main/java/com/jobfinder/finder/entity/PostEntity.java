@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -16,7 +17,15 @@ import lombok.Setter;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-@Entity(name = "post")
+@Entity
+@Table(
+    name = "posts",
+    indexes = {
+        @jakarta.persistence.Index(name = "idx_post_title", columnList = "title"),
+        @jakarta.persistence.Index(name = "idx_post_location", columnList = "location"),
+        @jakarta.persistence.Index(name = "idx_post_employment_type", columnList = "employmentType"),
+    }
+)
 @AllArgsConstructor
 @Getter
 @Setter
