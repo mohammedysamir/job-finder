@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -32,6 +33,7 @@ public class SubmissionService {
   private final PostRepository postRepository;
   private final SubmissionMapper submissionMapper;
 
+  @Cacheable
   public List<SubmissionResponseDto> getSubmission(SubmissionFilterRequestDto filter, int page, int size) {
     log.info("Fetching posts with filter: {}", filter);
     PageRequest pageRequest = PageRequest.of(page, size);

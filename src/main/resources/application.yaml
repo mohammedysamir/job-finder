@@ -1,0 +1,44 @@
+server:
+  port: 8080
+# Database configuration
+spring:
+  application:
+    name: finder
+
+  # PostgreSQL configuration
+  datasource:
+    url: jdbc:postgresql://localhost:5432/jobfinder
+    username: postgres
+    password: i4A67kQ8tjVohn9IpEG2
+    driver-class-name: org.postgresql.Driver
+
+    # Redis configuration
+  redis:
+    host: localhost
+    port: 6379
+    password: k9ruHDmGiXw5N3X9ZubS
+    timeout: 2000
+    ttl:
+      days: 1
+    database: 0
+    enabled: true
+
+
+  # Hibernate configuration
+  jpa:
+    hibernate:
+      ddl-auto: update
+      show-sql: true
+
+  # JPA configuration
+  properties:
+    hibernate:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      format_sql: true
+
+# Logging configuration
+logging:
+  level:
+    org.springframework: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE

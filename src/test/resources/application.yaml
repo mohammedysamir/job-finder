@@ -12,6 +12,7 @@ spring:
     port: 6379
     timeout: 2000
     database: 0
+    enabled: false
 
   #Database configuration
   jpa:
@@ -36,4 +37,4 @@ management:
       show-details: always
     info:
       git:
-        enabled:   true
+        enabled: true
