@@ -24,7 +24,7 @@ public class PostService {
   private final PostRepository postRepository;
   private final PostMapper postMapper;
 
-  @Cacheable(key = "#filter.getPostId().toString() + #page + #size")
+  @Cacheable(key = "customKeyGenerator")
   public List<PostDto> getPosts(PostFilterRequestDto filter, int page, int size) {
     log.info("Fetching posts with filter: {}", filter);
     PageRequest pageRequest = PageRequest.of(page, size);

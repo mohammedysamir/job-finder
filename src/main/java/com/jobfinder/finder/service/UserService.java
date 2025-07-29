@@ -79,7 +79,7 @@ public class UserService {
     }
   }
 
-  @CacheEvict(key = "#username")
+  @CacheEvict(key = "customKeyGenerator")
   public void deleteUser(String username) {
     log.info("Deleting a user for username: {}", username);
     Optional<UserEntity> optionalUserEntity = userRepository.findByUsername(username);

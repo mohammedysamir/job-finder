@@ -24,14 +24,14 @@ public class AdminService {
 
   private static final String ADMIN_NOT_FOUND_MESSAGE = "No admin was found with this username: ";
 
-  @Cacheable(key = "#username")
+  @Cacheable(key = "customKeyGenerator")
   public AdminResponseDto getAdmin(String username) {
     log.info("Fetching admin details for username: {}", username);
     AdminEntity adminEntity = adminRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(ADMIN_NOT_FOUND_MESSAGE + username));
     return adminMapper.toDto(adminEntity);
   }
 
-  @CacheEvict(key = "#username")
+  @CacheEvict(key = "customKeyGenerator")
   public void deleteAdmin(String username) {
     log.info("Deleting an admin with username: {}", username);
     AdminEntity adminEntity = adminRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(ADMIN_NOT_FOUND_MESSAGE + username));
