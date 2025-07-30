@@ -24,7 +24,7 @@ import org.springframework.data.redis.serializer.RedisSerializationContext.Seria
 @Slf4j
 @ConditionalOnProperty(name = "spring.redis.enabled", havingValue = "true")
 public class RedisConfiguration extends CachingConfigurerSupport {
-  private static final String CACHE_NAME = "jobFinderCache";
+  public static final String CACHE_NAME = "jobFinderCache";
   @Value("${spring.redis.cache.ttl:2}")
   private static Long ttlInDays;
 
@@ -41,7 +41,7 @@ public class RedisConfiguration extends CachingConfigurerSupport {
   @Bean
   public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
     return builder -> builder
-        .withCacheConfiguration("CACHE_NAME", cacheConfiguration());//add another cache configuration if needed
+        .withCacheConfiguration(CACHE_NAME, cacheConfiguration());//add another cache configuration if needed
   }
 
   @Bean
@@ -61,7 +61,7 @@ public class RedisConfiguration extends CachingConfigurerSupport {
     return RedisCacheManager.builder(connectionFactory).build();
   }
 
-  @Bean("CustomRedisKeyGenerator")
+  @Bean("customRedisKeyGenerator")
   public KeyGenerator customRedisKeyGenerator() {
     return new CustomRedisKeyGenerator();
   }
