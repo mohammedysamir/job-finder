@@ -1,5 +1,6 @@
 package com.jobfinder.finder.service;
 
+import com.jobfinder.finder.config.redis.RedisConfiguration;
 import com.jobfinder.finder.dto.user.UserPatchDto;
 import com.jobfinder.finder.dto.user.UserRegistrationDto;
 import com.jobfinder.finder.dto.user.UserResponseDto;
@@ -50,7 +51,7 @@ public class UserService {
     return userMapper.toDto(entity);
   }
 
-  @Cacheable
+  @Cacheable(cacheNames = RedisConfiguration.CACHE_NAME, keyGenerator = "customRedisKeyGenerator")
   public UserResponseDto getUserProfile(String username) {
     log.info("Fetching user profile for username: {}", username);
     Optional<UserEntity> optionalUserEntity = userRepository.findByUsername(username);
@@ -79,7 +80,7 @@ public class UserService {
     }
   }
 
-  @CacheEvict(key = "customKeyGenerator")
+  @CacheEvict(cacheNames = RedisConfiguration.CACHE_NAME, keyGenerator = "customRedisKeyGenerator")
   public void deleteUser(String username) {
     log.info("Deleting a user for username: {}", username);
     Optional<UserEntity> optionalUserEntity = userRepository.findByUsername(username);

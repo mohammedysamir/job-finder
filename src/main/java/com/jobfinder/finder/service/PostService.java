@@ -1,5 +1,6 @@
 package com.jobfinder.finder.service;
 
+import com.jobfinder.finder.config.redis.RedisConfiguration;
 import com.jobfinder.finder.constant.PostStatus;
 import com.jobfinder.finder.dto.post.PostDto;
 import com.jobfinder.finder.dto.post.PostFilterRequestDto;
@@ -24,7 +25,7 @@ public class PostService {
   private final PostRepository postRepository;
   private final PostMapper postMapper;
 
-  @Cacheable(key = "customKeyGenerator")
+  @Cacheable(cacheNames = RedisConfiguration.CACHE_NAME, keyGenerator = "customRedisKeyGenerator")
   public List<PostDto> getPosts(PostFilterRequestDto filter, int page, int size) {
     log.info("Fetching posts with filter: {}", filter);
     PageRequest pageRequest = PageRequest.of(page, size);
@@ -65,7 +66,7 @@ public class PostService {
     postRepository.save(existingPost);
   }
 
-  @CacheEvict(key = "#postId")
+  @CacheEvict(cacheNames = RedisConfiguration.CACHE_NAME, keyGenerator = "customRedisKeyGenerator")
   public void deletePost(String postId) {
     log.info("Deleting a post with ID: {}", postId);
     PostEntity existingPost = postRepository.findById(Long.valueOf(postId))

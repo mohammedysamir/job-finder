@@ -1,5 +1,6 @@
 package com.jobfinder.finder.service;
 
+import com.jobfinder.finder.config.redis.RedisConfiguration;
 import com.jobfinder.finder.constant.PostStatus;
 import com.jobfinder.finder.constant.SubmissionStatus;
 import com.jobfinder.finder.dto.post.PostDto;
@@ -33,7 +34,7 @@ public class SubmissionService {
   private final PostRepository postRepository;
   private final SubmissionMapper submissionMapper;
 
-  @Cacheable(key = "customKeyGenerator")
+  @Cacheable(cacheNames = RedisConfiguration.CACHE_NAME, keyGenerator = "customRedisKeyGenerator")
   public List<SubmissionResponseDto> getSubmission(SubmissionFilterRequestDto filter, int page, int size) {
     log.info("Fetching posts with filter: {}", filter);
     PageRequest pageRequest = PageRequest.of(page, size);
