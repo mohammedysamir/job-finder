@@ -15,10 +15,10 @@ import lombok.Setter;
 public class AdminCreationDto {
   @NotBlank(message = "Username cannot be blank")
   private String username;
-  @Email
-  @NotBlank(message = "Email cannot be blank")
-  private String email;
   @NotBlank(message = "Password cannot be blank")
   @Size(min = 12, max = 25, message = "Password must be between 12 and 25 characters")
   private String password;
+  @Email
+  @NotBlank(message = "Email cannot be blank")
+  private String email;
 }
