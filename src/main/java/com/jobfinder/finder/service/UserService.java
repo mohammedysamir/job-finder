@@ -1,10 +1,12 @@
 package com.jobfinder.finder.service;
 
 import com.jobfinder.finder.config.redis.RedisConfiguration;
+import com.jobfinder.finder.dto.user.UserLoginDto;
 import com.jobfinder.finder.dto.user.UserPatchDto;
 import com.jobfinder.finder.dto.user.UserRegistrationDto;
 import com.jobfinder.finder.dto.user.UserResponseDto;
 import com.jobfinder.finder.entity.UserEntity;
+import com.jobfinder.finder.exception.UsernameConflictException;
 import com.jobfinder.finder.mapper.UserMapper;
 import com.jobfinder.finder.repository.UserRepository;
 import jakarta.validation.Valid;
@@ -26,7 +28,7 @@ public class UserService {
     this.userMapper = userMapper;
   }
 
-  public UserResponseDto loginUser(@Valid UserRegistrationDto dto) {
+  public UserResponseDto loginUser(@Valid UserLoginDto dto) {
     log.info("Logging in user: {}", dto.toString());
     Optional<UserEntity> optionalUserEntity = userRepository.findByUsernameOrEmail(dto.getUsername(), dto.getEmail());
     if (optionalUserEntity.isPresent()) {
@@ -45,7 +47,10 @@ public class UserService {
       log.error("Invalid role provided: {}", dto.getRole());
       throw new IllegalArgumentException("Invalid role provided: " + dto.getRole());
     }
-
+    if (userRepository.findByUsername(dto.getUsername()).isPresent()) {
+      log.error("Username already exists: {}", dto.getUsername());
+      throw new UsernameConflictException(dto.getUsername());
+    }
     UserEntity entity = userMapper.toEntity(dto);
     userRepository.save(entity);
     return userMapper.toDto(entity);
