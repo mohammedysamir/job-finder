@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AdminController.class)
-public class AdminControllerIntegrationTest extends FinderIntegrationTestInitiator{
+public class AdminControllerIntegrationTest extends FinderIntegrationTestInitiator {
 
   @MockBean
   private AdminService adminService;
@@ -92,7 +92,7 @@ public class AdminControllerIntegrationTest extends FinderIntegrationTestInitiat
   void createAdmin_superAdmin_happy() throws Exception {
     String username = "admin";
     String mail = "admin@gmail.com";
-    AdminCreationDto adminCreationDto = new AdminCreationDto(username, mail, "password1234");
+    AdminCreationDto adminCreationDto = new AdminCreationDto(username, "password1234", mail);
     AdminResponseDto adminResponseDto = new AdminResponseDto(username, mail);
     Mockito.when(adminService.createAdmin(Mockito.any(AdminCreationDto.class))).thenReturn(adminResponseDto);
 
@@ -109,7 +109,7 @@ public class AdminControllerIntegrationTest extends FinderIntegrationTestInitiat
   void createAdmin_admin_happy() throws Exception {
     String username = "admin";
     String mail = "admin@gmail.com";
-    AdminCreationDto adminCreationDto = new AdminCreationDto(username, mail, "password1234");
+    AdminCreationDto adminCreationDto = new AdminCreationDto(username, "password1234", mail);
     AdminResponseDto adminResponseDto = new AdminResponseDto(username, mail);
     Mockito.when(adminService.createAdmin(Mockito.any(AdminCreationDto.class))).thenReturn(adminResponseDto);
 
