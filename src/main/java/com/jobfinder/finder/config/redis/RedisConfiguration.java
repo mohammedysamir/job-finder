@@ -25,8 +25,8 @@ import org.springframework.data.redis.serializer.RedisSerializationContext.Seria
 @ConditionalOnProperty(name = "spring.redis.enabled", havingValue = "true")
 public class RedisConfiguration extends CachingConfigurerSupport {
   public static final String CACHE_NAME = "jobFinderCache";
-  @Value("${spring.redis.cache.ttl:2}")
-  private static Long ttlInDays;
+  @Value("${spring.redis.ttl:2}")
+  private Long ttlInDays;
 
   @Bean
   public RedisCacheConfiguration cacheConfiguration() {
