@@ -73,7 +73,7 @@ public class SubmissionController {
   @Operation(summary = "Update Submission Status", description = "Updates the status of a submission.")
   @PatchMapping("/{submissionId}/status")
   public ResponseEntity<SubmissionResponseDto> updateSubmissionStatus(
-      @PathVariable Long submissionId, SubmissionStatus status) {
+      @PathVariable String submissionId, SubmissionStatus status) {
     log.info("Updating submission's {} status to: {}", submissionId, status);
     SubmissionResponseDto response = submissionService.updateSubmissionStatus(submissionId, status);
     return new ResponseEntity<>(response, HttpStatus.OK);

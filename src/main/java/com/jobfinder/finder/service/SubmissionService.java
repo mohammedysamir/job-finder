@@ -75,7 +75,7 @@ public class SubmissionService {
     return submissionMapper.toResponse(dto, LocalDate.now(), SubmissionStatus.SUBMITTED);
   }
 
-  public SubmissionResponseDto updateSubmissionStatus(Long submissionId, SubmissionStatus status) {
+  public SubmissionResponseDto updateSubmissionStatus(String submissionId, SubmissionStatus status) {
     Optional<SubmissionEntity> optionalSubmission = submissionRepository.findById(submissionId);
     if (optionalSubmission.isEmpty()) {
       log.error("Submission with ID {} not found", submissionId);

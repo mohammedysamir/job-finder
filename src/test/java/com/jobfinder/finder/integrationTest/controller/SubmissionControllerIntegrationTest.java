@@ -5,13 +5,10 @@ import com.jobfinder.finder.controller.SubmissionController;
 import com.jobfinder.finder.dto.submission.SubmissionFilterRequestDto;
 import com.jobfinder.finder.dto.submission.SubmissionRequestDto;
 import com.jobfinder.finder.dto.submission.SubmissionResponseDto;
-import com.jobfinder.finder.dto.user.AddressDto;
-import com.jobfinder.finder.dto.user.UserPatchDto;
-import com.jobfinder.finder.dto.user.UserRegistrationDto;
-import com.jobfinder.finder.dto.user.UserResponseDto;
 import com.jobfinder.finder.service.SubmissionService;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -249,7 +246,7 @@ public class SubmissionControllerIntegrationTest extends FinderIntegrationTestIn
   @WithUserDetails("recruiter")
   void updateSubmissionStatus_happy() throws Exception {
     // Given
-    long submissionId = 1L;
+    String submissionId = UUID.randomUUID().toString();
     SubmissionStatus status = SubmissionStatus.ACCEPTED;
 
     SubmissionResponseDto response = new SubmissionResponseDto(
@@ -260,7 +257,7 @@ public class SubmissionControllerIntegrationTest extends FinderIntegrationTestIn
         submittedAt
     );
 
-    Mockito.when(submissionService.updateSubmissionStatus(Mockito.anyLong(), Mockito.any(SubmissionStatus.class)))
+    Mockito.when(submissionService.updateSubmissionStatus(Mockito.anyString(), Mockito.any(SubmissionStatus.class)))
         .thenReturn(response);
 
     // When
@@ -278,7 +275,7 @@ public class SubmissionControllerIntegrationTest extends FinderIntegrationTestIn
   @WithUserDetails("recruiter")
   void updateSubmissionStatus_invalidStatus() throws Exception {
     // Given
-    long submissionId = 1L;
+    String submissionId = UUID.randomUUID().toString();
     SubmissionStatus status = SubmissionStatus.ACCEPTED;
 
     SubmissionResponseDto response = new SubmissionResponseDto(
@@ -289,7 +286,7 @@ public class SubmissionControllerIntegrationTest extends FinderIntegrationTestIn
         submittedAt
     );
 
-    Mockito.when(submissionService.updateSubmissionStatus(Mockito.anyLong(), Mockito.any(SubmissionStatus.class)))
+    Mockito.when(submissionService.updateSubmissionStatus(Mockito.anyString(), Mockito.any(SubmissionStatus.class)))
         .thenReturn(response);
 
     // When
