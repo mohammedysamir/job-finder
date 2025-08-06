@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -73,7 +74,7 @@ public class SubmissionController {
   @Operation(summary = "Update Submission Status", description = "Updates the status of a submission.")
   @PatchMapping("/{submissionId}/status")
   public ResponseEntity<SubmissionResponseDto> updateSubmissionStatus(
-      @PathVariable String submissionId, SubmissionStatus status) {
+      @PathVariable String submissionId, @RequestParam SubmissionStatus status) {
     log.info("Updating submission's {} status to: {}", submissionId, status);
     SubmissionResponseDto response = submissionService.updateSubmissionStatus(submissionId, status);
     return new ResponseEntity<>(response, HttpStatus.OK);
