@@ -45,7 +45,9 @@ public class PostService {
 
   public PostDto createPost(@Valid PostDto dto) {
     log.info("Creating a new post with data: {}", dto);
-    postRepository.save(postMapper.toEntity(dto));
+    PostEntity entity = postMapper.toEntity(dto);
+    entity.setStatus(PostStatus.ACTIVE);
+    postRepository.save(entity);
     return dto;
   }
 
@@ -123,16 +125,16 @@ public class PostService {
   private PostEntity updatePost(PostEntity existingPost, PostDto dto) {
     PostEntity entity = postMapper.toEntity(dto);
     entity.setId(existingPost.getId());
-    entity.setTitle(dto.getTitle() == null? existingPost.getTitle() : dto.getTitle());
-    entity.setDescription(dto.getDescription() == null? existingPost.getDescription() : dto.getDescription());
-    entity.setLocation(dto.getLocation() == null? existingPost.getLocation() : dto.getLocation());
-    entity.setCompanyName(dto.getCompanyName() == null? existingPost.getCompanyName() : dto.getCompanyName());
-    entity.setEmploymentType(dto.getEmploymentType() == null? existingPost.getEmploymentType() : dto.getEmploymentType());
-    entity.setMinimumExperience(dto.getMinimumExperience() == 0? existingPost.getMinimumExperience() : dto.getMinimumExperience());
-    entity.setMaximumExperience(dto.getMaximumExperience() == 0? existingPost.getMaximumExperience() : dto.getMaximumExperience());
-    entity.setSkillsRequired(dto.getSkillsRequired() == null || dto.getSkillsRequired().isEmpty()? existingPost.getSkillsRequired() : dto.getSkillsRequired());
-    entity.setRecruiterUsername(dto.getRecruiterUsername() == null? existingPost.getRecruiterUsername() : dto.getRecruiterUsername());
-    entity.setStatus(dto.getStatus() == null? existingPost.getStatus() : dto.getStatus());
+    entity.setTitle(dto.getTitle() == null ? existingPost.getTitle() : dto.getTitle());
+    entity.setDescription(dto.getDescription() == null ? existingPost.getDescription() : dto.getDescription());
+    entity.setLocation(dto.getLocation() == null ? existingPost.getLocation() : dto.getLocation());
+    entity.setCompanyName(dto.getCompanyName() == null ? existingPost.getCompanyName() : dto.getCompanyName());
+    entity.setEmploymentType(dto.getEmploymentType() == null ? existingPost.getEmploymentType() : dto.getEmploymentType());
+    entity.setMinimumExperience(dto.getMinimumExperience() == 0 ? existingPost.getMinimumExperience() : dto.getMinimumExperience());
+    entity.setMaximumExperience(dto.getMaximumExperience() == 0 ? existingPost.getMaximumExperience() : dto.getMaximumExperience());
+    entity.setSkillsRequired(dto.getSkillsRequired() == null || dto.getSkillsRequired().isEmpty() ? existingPost.getSkillsRequired() : dto.getSkillsRequired());
+    entity.setRecruiterUsername(dto.getRecruiterUsername() == null ? existingPost.getRecruiterUsername() : dto.getRecruiterUsername());
+    entity.setStatus(dto.getStatus() == null ? existingPost.getStatus() : dto.getStatus());
 
     return entity;
   }
