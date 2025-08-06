@@ -2,12 +2,15 @@ package com.jobfinder.finder.entity;
 
 import com.jobfinder.finder.constant.Roles;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -21,8 +24,15 @@ import lombok.Setter;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-//todo: create index on username and email and Roles
-@Entity(name = "user")
+@Entity
+@Table(
+    name = "users",
+    indexes = {
+        @Index(name = "idx_username", columnList = "username", unique = true),
+        @Index(name = "idx_email", columnList = "email", unique = true),
+        @Index(name = "idx_role", columnList = "role")
+    }
+)
 @AllArgsConstructor
 @Getter
 @Setter
@@ -57,8 +67,8 @@ public class UserEntity {
   )
   private List<String> phoneNumbers;
 
-  @OneToMany(mappedBy = "username")
   @NotEmpty
+  @Embedded
   private List<AddressEntity> addresses;
 
   @Past

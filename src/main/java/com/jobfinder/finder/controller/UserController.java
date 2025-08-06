@@ -1,5 +1,6 @@
 package com.jobfinder.finder.controller;
 
+import com.jobfinder.finder.dto.user.UserLoginDto;
 import com.jobfinder.finder.dto.user.UserPatchDto;
 import com.jobfinder.finder.dto.user.UserRegistrationDto;
 import com.jobfinder.finder.dto.user.UserResponseDto;
@@ -44,7 +45,7 @@ public class UserController {
       description = "Endpoint for user login. The user must provide valid credentials including username and password."
   )
   @PostMapping("/login")
-  public ResponseEntity<UserResponseDto> loginUser(@RequestBody @Valid UserRegistrationDto dto) {
+  public ResponseEntity<UserResponseDto> loginUser(@RequestBody @Valid UserLoginDto dto) {
     log.info("Logging in user:{}", dto.toString());
     return new ResponseEntity<>(userService.loginUser(dto), HttpStatus.OK);
   }

@@ -1,5 +1,6 @@
 package com.jobfinder.finder.service;
 
+import com.jobfinder.finder.config.redis.RedisConfiguration;
 import com.jobfinder.finder.constant.PostStatus;
 import com.jobfinder.finder.constant.SubmissionStatus;
 import com.jobfinder.finder.dto.post.PostDto;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -32,6 +34,7 @@ public class SubmissionService {
   private final PostRepository postRepository;
   private final SubmissionMapper submissionMapper;
 
+  @Cacheable(cacheNames = RedisConfiguration.CACHE_NAME, keyGenerator = "customRedisKeyGenerator")
   public List<SubmissionResponseDto> getSubmission(SubmissionFilterRequestDto filter, int page, int size) {
     log.info("Fetching posts with filter: {}", filter);
     PageRequest pageRequest = PageRequest.of(page, size);
@@ -72,7 +75,7 @@ public class SubmissionService {
     return submissionMapper.toResponse(dto, LocalDate.now(), SubmissionStatus.SUBMITTED);
   }
 
-  public SubmissionResponseDto updateSubmissionStatus(Long submissionId, SubmissionStatus status) {
+  public SubmissionResponseDto updateSubmissionStatus(String submissionId, SubmissionStatus status) {
     Optional<SubmissionEntity> optionalSubmission = submissionRepository.findById(submissionId);
     if (optionalSubmission.isEmpty()) {
       log.error("Submission with ID {} not found", submissionId);
