@@ -5,6 +5,7 @@ import com.jobfinder.finder.constant.PostStatus;
 import com.jobfinder.finder.dto.post.PostDto;
 import com.jobfinder.finder.dto.post.PostFilterRequestDto;
 import com.jobfinder.finder.entity.PostEntity;
+import com.jobfinder.finder.exception.PostNoLongerExistsException;
 import com.jobfinder.finder.mapper.PostMapper;
 import com.jobfinder.finder.repository.PostRepository;
 import jakarta.persistence.criteria.Predicate;
@@ -54,7 +55,7 @@ public class PostService {
   public PostDto updatePost(String postId, @Valid PostDto dto) {
     log.info("Updating post with ID: {} with data: {}", postId, dto);
     PostEntity existingPost = postRepository.findById(Long.valueOf(postId))
-        .orElseThrow(() -> new IllegalArgumentException("Post not found with ID: " + postId));
+        .orElseThrow(() -> new PostNoLongerExistsException("Post not found with ID: " + postId));
     //update only set field in dto into existingPost
     PostEntity entity = updatePost(existingPost, dto);
 

@@ -2,6 +2,7 @@ package com.jobfinder.finder.entity;
 
 import com.jobfinder.finder.constant.Roles;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -34,6 +36,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
     }
 )
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class UserEntity {
@@ -68,7 +71,7 @@ public class UserEntity {
   private List<String> phoneNumbers;
 
   @NotEmpty
-  @Embedded
+  @ElementCollection
   private List<AddressEntity> addresses;
 
   @Past

@@ -13,14 +13,15 @@ spring:
     driver-class-name: org.postgresql.Driver
 
     # Redis configuration
-  redis:
-    host: localhost
-    port: 6379
-    password: k9ruHDmGiXw5N3X9ZubS
-    timeout: 2000
-    ttl: 5
-    database: 0
-    enabled: true
+    data:
+      redis:
+        host: localhost
+        port: 6379
+        password: k9ruHDmGiXw5N3X9ZubS
+        timeout: 2000
+        ttl: 5
+        database: 0
+        enabled: true
 
 
   # Hibernate configuration

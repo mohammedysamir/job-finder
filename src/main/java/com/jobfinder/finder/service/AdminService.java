@@ -10,6 +10,7 @@ import com.jobfinder.finder.exception.AdminNotFoundException;
 import com.jobfinder.finder.exception.UsernameConflictException;
 import com.jobfinder.finder.mapper.AdminMapper;
 import com.jobfinder.finder.repository.AdminRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -40,13 +41,19 @@ public class AdminService {
     adminRepository.delete(adminEntity);
   }
 
+  @Transactional
   public AdminResponseDto updateAdmin(String username, AdminPatchDto dto) {
     log.info("Patching an admin with username: {} with data: {}", username, dto);
     AdminEntity adminEntity = adminRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(ADMIN_NOT_FOUND_MESSAGE + username));
-    AdminEntity newEntity = adminMapper.toEntity(dto);
+    AdminEntity newEntity = new AdminEntity();
 
     newEntity.setId(adminEntity.getId());
     newEntity.setUsername(adminEntity.getUsername());
+    //validate the patch DTO
+    validatePatchDto(dto);
+
+    newEntity.setPassword(dto.getPassword() != null ? dto.getPassword() : adminEntity.getPassword());
+    newEntity.setEmail(dto.getEmail() != null ? dto.getEmail() : adminEntity.getEmail());
 
     adminRepository.save(newEntity);
     return adminMapper.toDto(newEntity);
@@ -60,6 +67,21 @@ public class AdminService {
     }
     adminRepository.save(adminMapper.toEntity(dto));
     return adminMapper.toResponse(dto);
+  }
+
+  private void validatePatchDto(AdminPatchDto dto) {
+
+    String password = dto.getPassword();
+    String email = dto.getEmail();
+
+    if (password != null && (password.length() < 12 || password.length() > 25)) {
+      log.error("Password must be between 12 and 25 characters");
+      throw new IllegalArgumentException("Password must be between 12 and 25 characters");
+    }
+    if (email != null && !email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+      log.error("Invalid email format: {}", email);
+      throw new IllegalArgumentException("Invalid email format: " + email);
+    }
   }
 
 }

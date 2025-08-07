@@ -7,10 +7,12 @@ import com.jobfinder.finder.dto.user.UserRegistrationDto;
 import com.jobfinder.finder.dto.user.UserResponseDto;
 import com.jobfinder.finder.entity.UserEntity;
 import com.jobfinder.finder.exception.UsernameConflictException;
+import com.jobfinder.finder.mapper.AddressMapper;
 import com.jobfinder.finder.mapper.UserMapper;
 import com.jobfinder.finder.repository.UserRepository;
 import jakarta.validation.Valid;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -19,14 +21,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UserService {
   private final UserRepository userRepository;
   private final UserMapper userMapper;
-
-  public UserService(UserRepository userRepository, UserMapper userMapper) {
-    this.userRepository = userRepository;
-    this.userMapper = userMapper;
-  }
+  private final AddressMapper addressMapper;
 
   public UserResponseDto loginUser(@Valid UserLoginDto dto) {
     log.info("Logging in user: {}", dto.toString());
@@ -76,7 +75,29 @@ public class UserService {
       UserEntity userEntity = optionalUserEntity.get();
       UserEntity updatedEntity = userMapper.toEntity(dto);
       updatedEntity.setId(userEntity.getId());
-
+      if (dto.getEmail() != null) {
+        updatedEntity.setEmail(dto.getEmail());
+      }
+      if (dto.getFirstName() != null) {
+        updatedEntity.setFirstName(dto.getFirstName());
+      }
+      if (dto.getLastName() != null) {
+        updatedEntity.setLastName(dto.getLastName());
+      }
+      if (dto.getPhoneNumbers() != null) {
+        updatedEntity.setPhoneNumbers(dto.getPhoneNumbers());
+      }
+      if (dto.getAddresses() != null) {
+        updatedEntity.setAddresses(addressMapper.mapToAddressEntityList(dto.getAddresses()));
+      }
+      if (dto.getDateOfBirth() != null) {
+        updatedEntity.setDateOfBirth(dto.getDateOfBirth());
+      }
+      if (dto.getImageUrl() != null) {
+        updatedEntity.setImageUrl(dto.getImageUrl());
+      }
+      updatedEntity.setUsername(userEntity.getUsername()); // Keep the original username
+      updatedEntity.setRole(userEntity.getRole()); // Keep the original role
       userRepository.save(updatedEntity);
       return userMapper.toDto(updatedEntity);
     } else {

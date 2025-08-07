@@ -1,5 +1,6 @@
 package com.jobfinder.finder.dto.admin;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -13,10 +14,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 public class AdminPatchDto {
-  @NotBlank(message = "Password cannot be blank")
   @Size(min = 12, max = 25, message = "Password must be between 12 and 25 characters")
   private String password;
-  @NotBlank
   @Email
   private String email;
 }

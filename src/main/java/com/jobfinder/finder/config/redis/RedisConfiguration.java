@@ -22,10 +22,10 @@ import org.springframework.data.redis.serializer.RedisSerializationContext.Seria
 @Configuration
 @EnableCaching
 @Slf4j
-@ConditionalOnProperty(name = "spring.redis.enabled", havingValue = "true")
+@ConditionalOnProperty(name = "spring.data.redis.enabled", havingValue = "true")
 public class RedisConfiguration extends CachingConfigurerSupport {
   public static final String CACHE_NAME = "jobFinderCache";
-  @Value("${spring.redis.ttl:2}")
+  @Value("${spring.data.redis.ttl:2}")
   private Long ttlInDays;
 
   @Bean

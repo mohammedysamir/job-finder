@@ -5,16 +5,26 @@ import com.jobfinder.finder.exception.CloseAClosedPositionException;
 import com.jobfinder.finder.exception.PostNoLongerExistsException;
 import com.jobfinder.finder.exception.UnauthorizedException;
 import com.jobfinder.finder.exception.UserAlreadyExistsException;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandlerController {
+
+  @ExceptionHandler(UsernameNotFoundException.class)
+  public ResponseEntity<String> handleUsernameNotFoundException(UsernameNotFoundException ex) {
+    log.error("Username not found exception: {}", ex.getMessage());
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+  }
 
   @ExceptionHandler(ApplyToClosedPositionException.class)
   public ResponseEntity<String> handleApplyToClosedPositionException(ApplyToClosedPositionException ex) {
@@ -46,8 +56,8 @@ public class GlobalExceptionHandlerController {
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You are not allowed to perform this action");
   }
 
-  @ExceptionHandler(ValidationException.class)
-  public ResponseEntity<String> handleValidationException(ValidationException ex) {
+  @ExceptionHandler(exception = {MethodArgumentNotValidException.class, ValidationException.class})
+  public ResponseEntity<String> handleValidationException(Exception ex) {
     log.error("Validation exception: {}", ex.getMessage());
     return ResponseEntity.badRequest().body("Validation error: " + ex.getMessage());
   }

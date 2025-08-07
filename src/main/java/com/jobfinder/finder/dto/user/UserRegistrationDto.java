@@ -28,7 +28,7 @@ public class UserRegistrationDto {
   private String lastName;
   @ValidPhoneNumber
   private List<String> phoneNumbers;// Format: "+countryCode phoneNumber"
-  private List<AddressDto> address;
+  private List<AddressDto> addresses;
   private LocalDate dateOfBirth; // Format: "yyyy-MM-dd"
   private String imageUrl;
   private String role; // "Applicant" or "Recruiter"

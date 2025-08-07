@@ -14,14 +14,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 public class UserPatchDto {
-  @Size(min = 12, max = 25)
   private String password;
   private String email;
   private String firstName;
   private String lastName;
   @ValidPhoneNumber
-  private List<String> phoneNumber; // Format: "+countryCode phoneNumber"
-  private List<AddressDto> address;
+  private List<String> phoneNumbers; // Format: "+countryCode phoneNumber"
+  private List<AddressDto> addresses;
   private LocalDate dateOfBirth; // Format: "yyyy-MM-dd"
   private String imageUrl;
 }
