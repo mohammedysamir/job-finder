@@ -10,9 +10,12 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -27,6 +30,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
     }
 )
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class PostEntity {
@@ -37,20 +41,19 @@ public class PostEntity {
   private String title;
   @NotBlank
   private String description;
-  @NotBlank
+  @NotNull
   @Enumerated(value = jakarta.persistence.EnumType.STRING)
   private PostStatus status; // e.g., "active", "closed", "suspended"
   @NotBlank
   private String location;
   @NotBlank
   private String companyName;
-  @NotBlank
+  @NotNull
   @Enumerated(value = jakarta.persistence.EnumType.STRING)
   private EmploymentType employmentType; // e.g., Full-time, Part-time, Contract
-  @NotBlank
   @Min(0)
   private int minimumExperience;
-  @NotBlank
+  @Positive
   private int maximumExperience;
   @NotEmpty
   private List<String> skillsRequired; // Comma-separated list of skills

@@ -39,6 +39,7 @@ public class SecurityConfiguration {
                     .requestMatchers(HttpMethod.GET, "/post/**").hasAnyRole(Roles.APPLICANT.name())
                     .requestMatchers(HttpMethod.POST, "/post/**").hasAnyRole(Roles.RECRUITER.name())
                     .requestMatchers(HttpMethod.PATCH, "/post/**").hasAnyRole(Roles.RECRUITER.name())
+                    .requestMatchers(HttpMethod.DELETE, "/post/**").hasAnyRole(Roles.RECRUITER.name(), Roles.ADMIN.name(), Roles.SUPER_ADMIN.name())
                     //-- Submission related endpoints
                     .requestMatchers(HttpMethod.POST, "/submit").hasRole(Roles.APPLICANT.name())
                     .requestMatchers(HttpMethod.GET, "/submit").hasAnyRole(Roles.APPLICANT.name(), Roles.RECRUITER.name())

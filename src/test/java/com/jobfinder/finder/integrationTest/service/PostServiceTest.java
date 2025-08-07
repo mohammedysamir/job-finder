@@ -3,12 +3,15 @@ package com.jobfinder.finder.integrationTest.service;
 import com.jobfinder.finder.config.redis.RedisConfiguration;
 import com.jobfinder.finder.constant.EmploymentType;
 import com.jobfinder.finder.constant.PostStatus;
-import com.jobfinder.finder.dto.post.PostDto;
+import com.jobfinder.finder.dto.post.PostCreationDto;
+import com.jobfinder.finder.dto.post.PostResponseDto;
 import com.jobfinder.finder.dto.post.PostFilterRequestDto;
+import com.jobfinder.finder.dto.post.PostUpdateDto;
 import com.jobfinder.finder.entity.PostEntity;
 import com.jobfinder.finder.mapper.PostMapper;
 import com.jobfinder.finder.repository.PostRepository;
 import com.jobfinder.finder.service.PostService;
+import jakarta.persistence.PostUpdate;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -85,10 +88,9 @@ public class PostServiceTest extends CacheTestIntializer {
 
   @Test
   public void createPostTest() {
-    PostDto dto = new PostDto(
+    PostCreationDto dto = new PostCreationDto(
         "Software Engineer",
         "Develop and maintain software applications.",
-        PostStatus.ACTIVE,
         "New York",
         "Tech Company",
         EmploymentType.FULL_TIME,
@@ -98,7 +100,7 @@ public class PostServiceTest extends CacheTestIntializer {
         "recruiter123"
     );
     Mockito.when(postRepository.save(Mockito.any(PostEntity.class))).thenReturn(activeFullTimeEntity);
-    PostDto response = postService.createPost(dto);
+    PostResponseDto response = postService.createPost(dto);
     Assertions.assertNotNull(response);
     Assertions.assertEquals(activeFullTimeEntity.getTitle(), response.getTitle());
     Assertions.assertEquals(activeFullTimeEntity.getDescription(), response.getDescription());
@@ -112,7 +114,7 @@ public class PostServiceTest extends CacheTestIntializer {
 
     Mockito.when(postRepository.findAll(Mockito.any(PageRequest.class))).thenReturn(page);
 
-    List<PostDto> posts = postService.getPosts(null, 0, 10);
+    List<PostResponseDto> posts = postService.getPosts(null, 0, 10);
 
     Assertions.assertNotNull(posts);
     Assertions.assertFalse(posts.isEmpty());
@@ -130,7 +132,7 @@ public class PostServiceTest extends CacheTestIntializer {
 
     Mockito.when(postRepository.findAll(Mockito.any(Specification.class), Mockito.any(PageRequest.class))).thenReturn(page);
 
-    List<PostDto> posts = postService.getPosts(filter, 0, 10);
+    List<PostResponseDto> posts = postService.getPosts(filter, 0, 10);
 
     Assertions.assertNotNull(posts);
     Assertions.assertFalse(posts.isEmpty());
@@ -145,7 +147,7 @@ public class PostServiceTest extends CacheTestIntializer {
   //-- Update Posts Test--//
   @Test
   public void updatePostTest() {
-    PostDto dto = new PostDto();
+    PostUpdateDto dto = new PostUpdateDto();
     dto.setMinimumExperience(4);
 
     PostEntity updatedEntity = new PostEntity(
@@ -165,7 +167,7 @@ public class PostServiceTest extends CacheTestIntializer {
     Mockito.when(postRepository.findById(Mockito.anyLong())).thenReturn(java.util.Optional.of(activeFullTimeEntity));
     Mockito.when(postRepository.save(Mockito.any(PostEntity.class))).thenReturn(updatedEntity);
 
-    PostDto response = postService.updatePost("1", dto);
+    PostResponseDto response = postService.updatePost("1", dto);
     Assertions.assertNotNull(response);
     Assertions.assertEquals("Software Engineer", response.getTitle());
     Assertions.assertEquals(4, response.getMinimumExperience());

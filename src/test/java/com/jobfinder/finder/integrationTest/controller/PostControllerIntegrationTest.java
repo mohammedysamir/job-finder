@@ -1,33 +1,22 @@
 package com.jobfinder.finder.integrationTest.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jobfinder.finder.constant.EmploymentType;
 import com.jobfinder.finder.constant.PostStatus;
 import com.jobfinder.finder.controller.PostController;
-import com.jobfinder.finder.dto.post.PostDto;
+import com.jobfinder.finder.dto.post.PostCreationDto;
 import com.jobfinder.finder.dto.post.PostFilterRequestDto;
-import com.jobfinder.finder.integrationTest.configuration.MockUserDetailsManagerConfig;
+import com.jobfinder.finder.dto.post.PostResponseDto;
+import com.jobfinder.finder.dto.post.PostUpdateDto;
 import com.jobfinder.finder.service.PostService;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.mockito.internal.matchers.Find;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -41,10 +30,11 @@ public class PostControllerIntegrationTest extends FinderIntegrationTestInitiato
   @WithUserDetails("applicant")
   void getPosts_happy() throws Exception {
 
-    List<PostDto> response = List.of(
-        new PostDto("Title1", "Description1", PostStatus.ACTIVE, "Location1", "Company1", EmploymentType.FULL_TIME, 2, 5, List.of("Java", "Spring"),
+    List<PostResponseDto> response = List.of(
+        new PostResponseDto(1L, "Title1", "Description1", PostStatus.ACTIVE, "Location1", "Company1", EmploymentType.FULL_TIME, 2, 5, List.of("Java", "Spring"),
             "recruiter1"),
-        new PostDto("Title2", "Description2", PostStatus.CLOSED, "Location2", "Company2", EmploymentType.PART_TIME, 1, 3, List.of("Python", "Django"),
+        new PostResponseDto(2L, "Title2", "Description2", PostStatus.CLOSED, "Location2", "Company2", EmploymentType.PART_TIME, 1, 3,
+            List.of("Python", "Django"),
             "recruiter2")
     );
     Mockito.when(postService.getPosts(Mockito.any(PostFilterRequestDto.class), Mockito.any(Integer.class), Mockito.any(Integer.class))).thenReturn(
@@ -67,7 +57,8 @@ public class PostControllerIntegrationTest extends FinderIntegrationTestInitiato
 
     Mockito.when(postService.getPosts(Mockito.any(PostFilterRequestDto.class), Mockito.any(Integer.class), Mockito.any(Integer.class))).thenReturn(
         List.of(
-            new PostDto("Title1", "Description1", PostStatus.ACTIVE, "Location1", "Company1", EmploymentType.FULL_TIME, 2, 5, List.of("Java", "Spring"),
+            new PostResponseDto(1L, "Title1", "Description1", PostStatus.ACTIVE, "Location1", "Company1", EmploymentType.FULL_TIME, 2, 5,
+                List.of("Java", "Spring"),
                 "recruiter1")
         )
     );
@@ -90,7 +81,8 @@ public class PostControllerIntegrationTest extends FinderIntegrationTestInitiato
     // Given
     Mockito.when(postService.getPosts(Mockito.any(PostFilterRequestDto.class), Mockito.any(Integer.class), Mockito.any(Integer.class))).thenReturn(
         List.of(
-            new PostDto("Title1", "Description1", PostStatus.ACTIVE, "Location1", "Company1", EmploymentType.FULL_TIME, 2, 5, List.of("Java", "Spring"),
+            new PostResponseDto(1L, "Title1", "Description1", PostStatus.ACTIVE, "Location1", "Company1", EmploymentType.FULL_TIME, 2, 5,
+                List.of("Java", "Spring"),
                 "recruiter1")
         )
     );
@@ -132,16 +124,17 @@ public class PostControllerIntegrationTest extends FinderIntegrationTestInitiato
   @WithUserDetails("recruiter")
   void createPost_happy() throws Exception {
     // Given
-    PostDto postDto = new PostDto("Title1", "Description1", PostStatus.ACTIVE, "Location1", "Company1", EmploymentType.FULL_TIME, 2, 5,
+    PostResponseDto postResponseDto = new PostResponseDto(1L, "Title1", "Description1", PostStatus.ACTIVE, "Location1", "Company1", EmploymentType.FULL_TIME, 2,
+        5,
         List.of("Java", "Spring"),
         "recruiter1");
 
-    Mockito.when(postService.createPost(Mockito.any(PostDto.class))).thenReturn(postDto);
+    Mockito.when(postService.createPost(Mockito.any(PostCreationDto.class))).thenReturn(postResponseDto);
     // When
     mockMvc.perform(
             MockMvcRequestBuilders.post("/post")
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(postDto))
+                .content(objectMapper.writeValueAsString(postResponseDto))
         ).andExpect(status().isCreated())
         .andExpect(jsonPath("$.title").value("Title1"))
         .andExpect(jsonPath("$.description").value("Description1"));
@@ -149,7 +142,8 @@ public class PostControllerIntegrationTest extends FinderIntegrationTestInitiato
 
   @Test
   void createPost_unauthorized_403() throws Exception {
-    PostDto postDto = new PostDto("Title1", "Description1", PostStatus.ACTIVE, "Location1", "Company1", EmploymentType.FULL_TIME, 2, 5,
+    PostResponseDto postResponseDto = new PostResponseDto(1L, "Title1", "Description1", PostStatus.ACTIVE, "Location1", "Company1", EmploymentType.FULL_TIME, 2,
+        5,
         List.of("Java", "Spring"),
         "recruiter1");
     // Given
@@ -157,7 +151,7 @@ public class PostControllerIntegrationTest extends FinderIntegrationTestInitiato
         MockMvcRequestBuilders.post("/post")
             .with(user("admin").password("admin").roles("admin"))
             .contentType("application/json")
-            .content(objectMapper.writeValueAsString(postDto))
+            .content(objectMapper.writeValueAsString(postResponseDto))
     ).andExpect(status().isForbidden());
   }
 
@@ -166,20 +160,22 @@ public class PostControllerIntegrationTest extends FinderIntegrationTestInitiato
     // Given
     String postId = "12345";
 
-    PostDto oldPost = new PostDto("old Title", "old Description", PostStatus.ACTIVE, "old Location", "old Company", EmploymentType.FULL_TIME, 3,
+    PostResponseDto oldPost = new PostResponseDto(1L, "old Title", "old Description", PostStatus.ACTIVE, "old Location", "old Company",
+        EmploymentType.FULL_TIME, 3,
         6, List.of("Java", "Spring Boot"), "recruiter1");
 
-    PostDto postDto = new PostDto("Updated Title", "Updated Description", PostStatus.ACTIVE, "Updated Location", "Updated Company", EmploymentType.FULL_TIME, 3,
+    PostResponseDto postResponseDto = new PostResponseDto(2L, "Updated Title", "Updated Description", PostStatus.ACTIVE, "Updated Location", "Updated Company",
+        EmploymentType.FULL_TIME, 3,
         6, List.of("Java", "Spring Boot"), "recruiter1");
 
-    Mockito.when(postService.updatePost(Mockito.any(String.class), Mockito.any(PostDto.class))).thenReturn(postDto);
+    Mockito.when(postService.updatePost(Mockito.any(String.class), Mockito.any(PostUpdateDto.class))).thenReturn(postResponseDto);
 
     // When
     mockMvc.perform(
             MockMvcRequestBuilders.patch("/post/{postId}", postId)
                 .with(user("recruiter").password("recruiter").roles("RECRUITER"))
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(postDto))
+                .content(objectMapper.writeValueAsString(postResponseDto))
         ).andExpect(status().isOk())
         .andExpect(jsonPath("$.title").value("Updated Title"))
         .andExpect(jsonPath("$.description").value("Updated Description"));
