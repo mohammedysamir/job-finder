@@ -20,6 +20,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Import(SecurityConfiguration.class)
 public class MockUserDetailsManagerConfig {
 
+  /*
   @Bean
   public UserDetailsManager userDetailsManager() {
     return new InMemoryUserDetailsManager(
@@ -48,6 +49,7 @@ public class MockUserDetailsManagerConfig {
     );
   }
 
+   */
   @Bean
   public PasswordEncoder passwordEncoder() {
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
