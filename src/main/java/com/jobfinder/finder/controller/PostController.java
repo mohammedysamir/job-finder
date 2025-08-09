@@ -75,7 +75,7 @@ public class PostController {
   )
   @Operation(summary = "Update Post by ID", description = "Updates a specific post by its ID and new information.")
   @PatchMapping("/{postId}")
-  public ResponseEntity<PostResponseDto> updatePost(@PathVariable String postId, @RequestBody PostUpdateDto dto) {
+  public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long postId, @RequestBody PostUpdateDto dto) {
     log.info("Updating post with ID: {} with data: {}", postId, dto);
     PostResponseDto updatedPost = postService.updatePost(postId, dto);
     return new ResponseEntity<>(updatedPost, HttpStatus.OK);
@@ -91,7 +91,7 @@ public class PostController {
   )
   @Operation(summary = "Patch Post Status", description = "Updates the status of a specific post by its ID.")
   @PatchMapping("/{postId}/status")
-  public ResponseEntity<Void> patchPostStatus(@PathVariable String postId, @RequestParam PostStatus status) {
+  public ResponseEntity<Void> patchPostStatus(@PathVariable Long postId, @RequestParam PostStatus status) {
     log.info("Update post status with ID: {} to {}", postId, status);
     postService.patchPostStatus(postId, status);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -106,7 +106,7 @@ public class PostController {
   )
   @Operation(summary = "Delete Post by ID", description = "Deletes a specific post by its ID.")
   @DeleteMapping("/{postId}")
-  public ResponseEntity<Void> deletePost(@PathVariable String postId) {
+  public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
     log.info("Deleting post with ID: {}", postId);
     postService.deletePost(postId);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);

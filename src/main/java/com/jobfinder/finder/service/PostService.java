@@ -63,7 +63,7 @@ public class PostService {
     return postMapper.toPostDto(dto);
   }
 
-  public PostResponseDto updatePost(String postId, PostUpdateDto dto) {
+  public PostResponseDto updatePost(Long postId, PostUpdateDto dto) {
     log.info("Updating post with ID: {} with data: {}", postId, dto);
     PostEntity existingPost = postRepository.findById(Long.valueOf(postId))
         .orElseThrow(() -> new PostNoLongerExistsException("Post not found with ID: " + postId));
@@ -86,7 +86,7 @@ public class PostService {
   }
 
   @CacheEvict(cacheNames = RedisConfiguration.CACHE_NAME, keyGenerator = "customRedisKeyGenerator")
-  public void deletePost(String postId) {
+  public void deletePost(Long postId) {
     log.info("Deleting a post with ID: {}", postId);
     PostEntity existingPost = postRepository.findById(Long.valueOf(postId))
         .orElseThrow(() -> new IllegalArgumentException("Post not found with ID: " + postId));

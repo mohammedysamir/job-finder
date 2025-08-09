@@ -4,14 +4,13 @@ import com.jobfinder.finder.config.redis.RedisConfiguration;
 import com.jobfinder.finder.constant.EmploymentType;
 import com.jobfinder.finder.constant.PostStatus;
 import com.jobfinder.finder.dto.post.PostCreationDto;
-import com.jobfinder.finder.dto.post.PostResponseDto;
 import com.jobfinder.finder.dto.post.PostFilterRequestDto;
+import com.jobfinder.finder.dto.post.PostResponseDto;
 import com.jobfinder.finder.dto.post.PostUpdateDto;
 import com.jobfinder.finder.entity.PostEntity;
 import com.jobfinder.finder.mapper.PostMapper;
 import com.jobfinder.finder.repository.PostRepository;
 import com.jobfinder.finder.service.PostService;
-import jakarta.persistence.PostUpdate;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -167,7 +166,7 @@ public class PostServiceTest extends CacheTestIntializer {
     Mockito.when(postRepository.findById(Mockito.anyLong())).thenReturn(java.util.Optional.of(activeFullTimeEntity));
     Mockito.when(postRepository.save(Mockito.any(PostEntity.class))).thenReturn(updatedEntity);
 
-    PostResponseDto response = postService.updatePost("1", dto);
+    PostResponseDto response = postService.updatePost(1L, dto);
     Assertions.assertNotNull(response);
     Assertions.assertEquals("Software Engineer", response.getTitle());
     Assertions.assertEquals(4, response.getMinimumExperience());
@@ -178,7 +177,7 @@ public class PostServiceTest extends CacheTestIntializer {
   public void patchPostStatusTest() {
     Mockito.when(postRepository.findById(Mockito.anyLong())).thenReturn(java.util.Optional.of(activeFullTimeEntity));
 
-    postService.patchPostStatus("1", PostStatus.SUSPENDED);
+    postService.patchPostStatus(1L, PostStatus.SUSPENDED);
 
     Mockito.verify(postRepository, Mockito.times(1)).save(Mockito.any(PostEntity.class));
     Assertions.assertEquals(PostStatus.SUSPENDED, activeFullTimeEntity.getStatus());
@@ -189,7 +188,7 @@ public class PostServiceTest extends CacheTestIntializer {
   public void deletePostTest() {
     cacheManager.getCache(RedisConfiguration.CACHE_NAME).put("PostService_deletePost_1", activeFullTimeEntity);
     Mockito.when(postRepository.findById(Mockito.anyLong())).thenReturn(java.util.Optional.of(activeFullTimeEntity));
-    postService.deletePost("1");
+    postService.deletePost(1L);
     Mockito.verify(postRepository, Mockito.times(1)).save(Mockito.any(PostEntity.class));
     Mockito.verify(postRepository, Mockito.times(1)).findById(Mockito.anyLong());
     Assertions.assertNull(cacheManager.getCache(RedisConfiguration.CACHE_NAME).get("PostService_deletePost_1"));

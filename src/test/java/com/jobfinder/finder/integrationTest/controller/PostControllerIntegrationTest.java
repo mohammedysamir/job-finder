@@ -100,7 +100,7 @@ public class PostControllerIntegrationTest extends FinderIntegrationTestInitiato
   @WithUserDetails("recruiter")
   void deletePost_happy() throws Exception {
     // Given
-    String postId = "12345";
+    Long postId = 12345L;
 
     Mockito.doNothing().when(postService).deletePost(postId);
     // When
@@ -112,7 +112,7 @@ public class PostControllerIntegrationTest extends FinderIntegrationTestInitiato
   @WithUserDetails("applicant")
   void deletePost_unauthorized_403() throws Exception {
     // Given
-    String postId = "12345";
+    Long postId = 12345L;
 
     Mockito.doNothing().when(postService).deletePost(postId);
     // When
@@ -158,7 +158,7 @@ public class PostControllerIntegrationTest extends FinderIntegrationTestInitiato
   @Test
   void updatePost_happy() throws Exception {
     // Given
-    String postId = "12345";
+    Long postId = 12345L;
 
     PostResponseDto oldPost = new PostResponseDto(1L, "old Title", "old Description", PostStatus.ACTIVE, "old Location", "old Company",
         EmploymentType.FULL_TIME, 3,
@@ -168,7 +168,7 @@ public class PostControllerIntegrationTest extends FinderIntegrationTestInitiato
         EmploymentType.FULL_TIME, 3,
         6, List.of("Java", "Spring Boot"), "recruiter1");
 
-    Mockito.when(postService.updatePost(Mockito.any(String.class), Mockito.any(PostUpdateDto.class))).thenReturn(postResponseDto);
+    Mockito.when(postService.updatePost(Mockito.any(Long.class), Mockito.any(PostUpdateDto.class))).thenReturn(postResponseDto);
 
     // When
     mockMvc.perform(
