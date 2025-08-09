@@ -1,11 +1,13 @@
 package com.jobfinder.finder.service;
 
+import com.jobfinder.finder.config.rabbitMq.RabbitMQConstants;
 import com.jobfinder.finder.config.redis.RedisConfiguration;
 import com.jobfinder.finder.constant.PostStatus;
 import com.jobfinder.finder.constant.SubmissionStatus;
 import com.jobfinder.finder.dto.submission.SubmissionFilterRequestDto;
 import com.jobfinder.finder.dto.submission.SubmissionRequestDto;
 import com.jobfinder.finder.dto.submission.SubmissionResponseDto;
+import com.jobfinder.finder.dto.submission.SubmissionStatusQueueMessage;
 import com.jobfinder.finder.entity.PostEntity;
 import com.jobfinder.finder.entity.SubmissionEntity;
 import com.jobfinder.finder.mapper.SubmissionMapper;
@@ -17,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +33,7 @@ public class SubmissionService {
   private final SubmissionRepository submissionRepository;
   private final PostRepository postRepository;
   private final SubmissionMapper submissionMapper;
+  private final RabbitTemplate rabbitTemplate;
 
   @Cacheable(cacheNames = RedisConfiguration.CACHE_NAME, keyGenerator = "customRedisKeyGenerator")
   public List<SubmissionResponseDto> getSubmission(SubmissionFilterRequestDto filter, int page, int size) {
@@ -85,11 +89,22 @@ public class SubmissionService {
       log.error("Post with ID {} is not active", postId);
       throw new IllegalArgumentException("Post is closed or suspended");
     }
-
     SubmissionEntity submissionEntity = optionalSubmission.get();
     submissionEntity.setStatus(status);
     submissionRepository.save(submissionEntity);
 
+    // Notify an applicant about the status change using RabbitMQ
+    rabbitTemplate.convertAndSend(
+        RabbitMQConstants.SUBMISSION_STATUS_EXCHANGE,
+        RabbitMQConstants.SUBMISSION_STATUS_CHANGED_ROUTING_KEY,
+        new SubmissionStatusQueueMessage(
+            submissionId,
+            submissionEntity.getUsername(),
+            postId,
+            status,
+            submissionEntity.getSubmissionDate()
+        )
+    );
     log.info("Submission with ID {} updated to status {}", submissionId, status);
     return submissionMapper.toDto(submissionEntity);
   }

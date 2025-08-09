@@ -86,4 +86,10 @@ public class UserEntity {
 
   @NotNull
   Roles role; // "Applicant" or "Recruiter"
+  //todo: add user status, e.g. CREATED,VERIFIED , SUSPENDED, DELETED
+  /*
+  @NotNull
+  UserStatus status;
+
+   */
 }

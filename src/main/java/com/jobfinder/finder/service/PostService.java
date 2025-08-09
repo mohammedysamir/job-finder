@@ -1,21 +1,27 @@
 package com.jobfinder.finder.service;
 
+import com.jobfinder.finder.config.rabbitMq.RabbitMQConstants;
 import com.jobfinder.finder.config.redis.RedisConfiguration;
 import com.jobfinder.finder.constant.PostStatus;
 import com.jobfinder.finder.dto.post.PostCreationDto;
 import com.jobfinder.finder.dto.post.PostResponseDto;
 import com.jobfinder.finder.dto.post.PostFilterRequestDto;
+import com.jobfinder.finder.dto.post.PostStatusChangeQueueMessage;
 import com.jobfinder.finder.dto.post.PostUpdateDto;
+import com.jobfinder.finder.dto.submission.SubmissionStatusQueueMessage;
 import com.jobfinder.finder.entity.PostEntity;
+import com.jobfinder.finder.entity.SubmissionEntity;
 import com.jobfinder.finder.exception.PostNoLongerExistsException;
 import com.jobfinder.finder.mapper.PostMapper;
 import com.jobfinder.finder.repository.PostRepository;
+import com.jobfinder.finder.repository.SubmissionRepository;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -29,6 +35,8 @@ import org.springframework.stereotype.Service;
 public class PostService {
   private final PostRepository postRepository;
   private final PostMapper postMapper;
+  private final SubmissionRepository submissionRepository;
+  private final RabbitTemplate rabbitTemplate;
 
   @Cacheable(cacheNames = RedisConfiguration.CACHE_NAME, keyGenerator = "customRedisKeyGenerator")
   public List<PostResponseDto> getPosts(PostFilterRequestDto filter, int page, int size) {
@@ -66,12 +74,15 @@ public class PostService {
     return postMapper.toDto(entity);
   }
 
-  public void patchPostStatus(String postId, PostStatus status) {
+  public void patchPostStatus(Long postId, PostStatus status) {
     log.info("Update post status with ID: {} to {}", postId, status);
-    PostEntity existingPost = postRepository.findById(Long.valueOf(postId))
+    PostEntity existingPost = postRepository.findById(postId)
         .orElseThrow(() -> new IllegalArgumentException("Post not found with ID: " + postId));
+
     existingPost.setStatus(status);
     postRepository.save(existingPost);
+    // Notify applicants of the post status change
+    notifyApplicantsOfPostStatusChange(postId, status);
   }
 
   @CacheEvict(cacheNames = RedisConfiguration.CACHE_NAME, keyGenerator = "customRedisKeyGenerator")
@@ -126,5 +137,22 @@ public class PostService {
     entity.setRecruiterUsername(dto.getRecruiterUsername() == null ? existingPost.getRecruiterUsername() : dto.getRecruiterUsername());
     entity.setStatus(existingPost.getStatus()); // Preserve the existing status
     return entity;
+  }
+
+  private void notifyApplicantsOfPostStatusChange(Long postId, PostStatus status) {
+    log.info("Notifying applicants of post status change for post ID: {} and status: {}", postId, status);
+    List<SubmissionEntity> byPostId = submissionRepository.findByPostId(postId);
+    for (SubmissionEntity entity : byPostId) {
+      rabbitTemplate.convertAndSend(
+          RabbitMQConstants.POST_STATUS_EXCHANGE,
+          RabbitMQConstants.POST_STATUS_CHANGED_ROUTING_KEY,
+          new PostStatusChangeQueueMessage(
+              postId,
+              status,
+              entity.getUsername()
+          )
+      );
+      log.info("Notified applicant {} of post status change for post ID: {}", entity.getUsername(), postId);
+    }
   }
 }

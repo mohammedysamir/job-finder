@@ -12,16 +12,41 @@ spring:
     password: i4A67kQ8tjVohn9IpEG2
     driver-class-name: org.postgresql.Driver
 
-    # Redis configuration
-    data:
-      redis:
-        host: localhost
-        port: 6379
-        password: k9ruHDmGiXw5N3X9ZubS
-        timeout: 2000
-        ttl: 5
-        database: 0
-        enabled: true
+  # Redis configuration
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: k9ruHDmGiXw5N3X9ZubS
+      timeout: 2000
+      ttl: 5
+      database: 0
+      enabled: true
+
+  #RabbitMQ configuration
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: jobfinder
+    password: PeFwrDFD4gKZvTzxcvZf
+    virtual-host: /
+    publisher-confirms: true
+    publisher-returns: true
+
+  # SMTP configuration
+  mail:
+    host: smtp.example.com
+    port: 587
+    username: #todo: define username
+    password: #todo: define password
+    from: #todo: define from address
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    protocol: smtp
 
 
   # Hibernate configuration
