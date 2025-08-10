@@ -2,6 +2,7 @@ package com.jobfinder.finder.dto.post;
 
 import com.jobfinder.finder.constant.EmploymentType;
 import com.jobfinder.finder.constant.PostStatus;
+import java.io.Serializable;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class PostResponseDto {
+public class PostResponseDto implements Serializable {
   private Long id; // Unique identifier for the post
   private String title;
   private String description;
