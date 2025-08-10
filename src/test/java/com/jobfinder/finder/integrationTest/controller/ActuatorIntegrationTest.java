@@ -22,8 +22,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@EnableAutoConfiguration(exclude = {RabbitAutoConfiguration.class, RedisAutoConfiguration.class}) //todo: validate if excluding is necessary
-class ActuatorIntegrationTest extends FinderIntegrationTestInitiator {
+@EnableAutoConfiguration(exclude = {
+    RabbitAutoConfiguration.class,
+    org.springframework.boot.actuate.autoconfigure.amqp.RabbitHealthContributorAutoConfiguration.class,
+    RedisAutoConfiguration.class
+})class ActuatorIntegrationTest extends FinderIntegrationTestInitiator {
 
   @Autowired
   MockMvc mockMvc;
