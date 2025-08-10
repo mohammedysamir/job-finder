@@ -32,14 +32,15 @@ spring:
     virtual-host: /
     publisher-confirms: true
     publisher-returns: true
+    enabled: true
 
   # SMTP configuration
   mail:
     host: smtp.example.com
     port: 587
-    username: #todo: define username
-    password: #todo: define password
-    from: #todo: define from address
+    username: mohammedre4a@gmail.com
+    password: EXoCguG3$ip!WP
+    from: mohammedre4a@gmail.com
     properties:
       mail:
         smtp:

@@ -1,31 +1,20 @@
 package com.jobfinder.finder.integrationTest.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jobfinder.finder.controller.UserController;
 import com.jobfinder.finder.dto.user.AddressDto;
 import com.jobfinder.finder.dto.user.UserPatchDto;
 import com.jobfinder.finder.dto.user.UserRegistrationDto;
 import com.jobfinder.finder.dto.user.UserResponseDto;
-import com.jobfinder.finder.integrationTest.configuration.MockUserDetailsManagerConfig;
 import com.jobfinder.finder.service.UserService;
 import com.jobfinder.finder.validator.PhoneNumberValidator;
 import java.time.LocalDate;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;

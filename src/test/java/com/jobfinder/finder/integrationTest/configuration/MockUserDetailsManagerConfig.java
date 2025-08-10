@@ -1,28 +1,19 @@
 package com.jobfinder.finder.integrationTest.configuration;
 
-import com.jobfinder.finder.config.security.SecurityConfiguration;
-import com.jobfinder.finder.constant.Roles;
 import java.util.List;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.provisioning.UserDetailsManager;
-import org.springframework.security.web.SecurityFilterChain;
 
 @TestConfiguration
-@Import(SecurityConfiguration.class)
 public class MockUserDetailsManagerConfig {
-
-  /*
+/*
   @Bean
-  public UserDetailsManager userDetailsManager() {
+  public UserDetailsService userDetailsService() {
     return new InMemoryUserDetailsManager(
         List.of(
             User.builder()
@@ -49,7 +40,9 @@ public class MockUserDetailsManagerConfig {
     );
   }
 
-   */
+
+ */
+
   @Bean
   public PasswordEncoder passwordEncoder() {
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
