@@ -11,6 +11,8 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import static com.jobfinder.finder.config.rabbitMq.RabbitMQConstants.SUBMISSION_STATUS_CHANGED_QUEUE;
+
 @Service
 @RequiredArgsConstructor
 public class QueueConsumer {
@@ -19,7 +21,7 @@ public class QueueConsumer {
   private static final String SUBMISSION_STATUS_CHANGED_SUBJECT = "Submission Status Changed";
   private static final String POST_STATUS_CHANGED_SUBJECT = "Post Status Changed";
 
-  @RabbitListener(queues = RabbitMQConstants.SUBMISSION_STATUS_CHANGED_QUEUE)
+  @RabbitListener(queues = SUBMISSION_STATUS_CHANGED_QUEUE)
   public void consumeMessageForSubmissionStatusChange(Object message) {
     if (message instanceof SubmissionStatusQueueMessage) {
       SubmissionStatusQueueMessage submissionStatusMessage = (SubmissionStatusQueueMessage) message;
