@@ -124,7 +124,7 @@ public class SubmissionServiceTest extends CacheTestIntializer {
 
     Mockito.when(postRepository.findById(Mockito.anyLong())).thenReturn(postEntityOptional);
 
-    SubmissionResponseDto result = submissionService.updateSubmissionStatus(submittedEntity.getId(), SubmissionStatus.ACCEPTED);
+    SubmissionResponseDto result = submissionService.updateSubmissionStatus(submittedEntity.getSubmissionId(), SubmissionStatus.ACCEPTED);
     Assertions.assertEquals(SubmissionStatus.ACCEPTED, result.getStatus());
   }
 
@@ -141,7 +141,7 @@ public class SubmissionServiceTest extends CacheTestIntializer {
 
     Mockito.when(postRepository.findById(Mockito.anyLong())).thenReturn(postEntityOptional);
 
-    SubmissionResponseDto result = submissionService.updateSubmissionStatus(submittedEntity.getId(), SubmissionStatus.REJECTED);
+    SubmissionResponseDto result = submissionService.updateSubmissionStatus(submittedEntity.getSubmissionId(), SubmissionStatus.REJECTED);
     Assertions.assertEquals(SubmissionStatus.REJECTED, result.getStatus());
   }
 
