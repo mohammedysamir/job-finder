@@ -51,6 +51,8 @@ public class SecurityConfiguration {
   }
 
   //todo: use database for user authentication
+  //define a new UserDetailsService bean to provide user details for authentication
+  // override UserDetails object to include role, username, email, and password -> to enable authenticating using username or email
   @Bean
   public UserDetailsService userDetailsService() {
     return new InMemoryUserDetailsManager(List.of(
