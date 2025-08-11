@@ -15,6 +15,7 @@ import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -26,14 +27,14 @@ import lombok.Setter;
     }
 )
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class SubmissionEntity {
   @GeneratedValue(strategy = GenerationType.UUID)
   @Id
-  private String id;
+  private String submissionId; // UUID as a string
   @NotBlank
-  @Column(unique = true)
   private String username;
   @NotNull
   @Positive
@@ -45,6 +46,6 @@ public class SubmissionEntity {
   @Enumerated(value = jakarta.persistence.EnumType.STRING)
   private SubmissionStatus status; // e.g., "submitted", "reviewed", "accepted", "rejected"
   @NotBlank
-  @FutureOrPresent
+  //@FutureOrPresent
   private LocalDate submissionDate; // ISO 8601 format (e.g., "2023-10-01T12:00:00Z")
 }

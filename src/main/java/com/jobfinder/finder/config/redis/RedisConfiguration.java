@@ -22,11 +22,14 @@ import org.springframework.data.redis.serializer.RedisSerializationContext.Seria
 @Configuration
 @EnableCaching
 @Slf4j
-@ConditionalOnProperty(name = "spring.redis.enabled", havingValue = "true")
+@ConditionalOnProperty(name = "spring.data.redis.enabled", havingValue = "true")
 public class RedisConfiguration extends CachingConfigurerSupport {
   public static final String CACHE_NAME = "jobFinderCache";
-  @Value("${spring.redis.ttl:2}")
+  @Value("${spring.data.redis.ttl:2}")
   private Long ttlInDays;
+
+  @Value("${spring.data.redis.password:}")
+  String redisPassword;
 
   @Bean
   public RedisCacheConfiguration cacheConfiguration() {
@@ -46,7 +49,11 @@ public class RedisConfiguration extends CachingConfigurerSupport {
 
   @Bean
   public RedisConnectionFactory redisConnectionFactory() {
-    return new LettuceConnectionFactory("localhost", 6379);
+    LettuceConnectionFactory localhost = new LettuceConnectionFactory("localhost", 6379);
+    if (!redisPassword.isBlank()) {localhost.setPassword(redisPassword);} else {
+      log.error("Redis password is not set. Please configure it in application properties.");
+    }
+    return localhost;
   }
 
   @Bean

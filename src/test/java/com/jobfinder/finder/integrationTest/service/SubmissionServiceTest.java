@@ -3,15 +3,18 @@ package com.jobfinder.finder.integrationTest.service;
 import com.jobfinder.finder.config.redis.RedisConfiguration;
 import com.jobfinder.finder.constant.EmploymentType;
 import com.jobfinder.finder.constant.PostStatus;
+import com.jobfinder.finder.constant.Roles;
 import com.jobfinder.finder.constant.SubmissionStatus;
 import com.jobfinder.finder.dto.submission.SubmissionFilterRequestDto;
 import com.jobfinder.finder.dto.submission.SubmissionRequestDto;
 import com.jobfinder.finder.dto.submission.SubmissionResponseDto;
 import com.jobfinder.finder.entity.PostEntity;
 import com.jobfinder.finder.entity.SubmissionEntity;
+import com.jobfinder.finder.entity.UserEntity;
 import com.jobfinder.finder.mapper.SubmissionMapper;
 import com.jobfinder.finder.repository.PostRepository;
 import com.jobfinder.finder.repository.SubmissionRepository;
+import com.jobfinder.finder.repository.UserRepository;
 import com.jobfinder.finder.service.SubmissionService;
 import java.time.LocalDate;
 import java.util.List;
@@ -29,6 +32,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.userdetails.User;
 
 @SpringBootTest
 public class SubmissionServiceTest extends CacheTestIntializer {
@@ -42,6 +46,9 @@ public class SubmissionServiceTest extends CacheTestIntializer {
 
   @MockBean
   PostRepository postRepository;
+
+  @MockBean
+  UserRepository userRepository;
 
   @Autowired
   SubmissionService submissionService;
@@ -117,7 +124,7 @@ public class SubmissionServiceTest extends CacheTestIntializer {
 
     Mockito.when(postRepository.findById(Mockito.anyLong())).thenReturn(postEntityOptional);
 
-    SubmissionResponseDto result = submissionService.updateSubmissionStatus(submittedEntity.getId(), SubmissionStatus.ACCEPTED);
+    SubmissionResponseDto result = submissionService.updateSubmissionStatus(submittedEntity.getSubmissionId(), SubmissionStatus.ACCEPTED);
     Assertions.assertEquals(SubmissionStatus.ACCEPTED, result.getStatus());
   }
 
@@ -134,7 +141,7 @@ public class SubmissionServiceTest extends CacheTestIntializer {
 
     Mockito.when(postRepository.findById(Mockito.anyLong())).thenReturn(postEntityOptional);
 
-    SubmissionResponseDto result = submissionService.updateSubmissionStatus(submittedEntity.getId(), SubmissionStatus.REJECTED);
+    SubmissionResponseDto result = submissionService.updateSubmissionStatus(submittedEntity.getSubmissionId(), SubmissionStatus.REJECTED);
     Assertions.assertEquals(SubmissionStatus.REJECTED, result.getStatus());
   }
 
@@ -149,7 +156,10 @@ public class SubmissionServiceTest extends CacheTestIntializer {
             List.of("Java", "Spring"), "recruiterUser"));
 
     Mockito.when(postRepository.findById(Mockito.anyLong())).thenReturn(postEntityOptional);
-
+    Mockito.when(userRepository.findByUsername(Mockito.anyString())).thenReturn(
+        Optional.of(new UserEntity(1L,"mohammed", "password", "mohammedre4a@gmail.com","Mohammed","Yasser",List.of("+20 123456789"),
+            List.of(), LocalDate.of(2000, 1, 1), "imageUrl",List.of(), Roles.APPLICANT))
+    );
     SubmissionResponseDto result = submissionService.submitPost(
         new SubmissionRequestDto("mohammed", 1L, "coverLetterUrl", "resumeUrl"));
 

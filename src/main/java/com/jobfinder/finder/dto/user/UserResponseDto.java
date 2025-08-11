@@ -1,5 +1,6 @@
 package com.jobfinder.finder.dto.user;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -11,13 +12,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class UserResponseDto {
+public class UserResponseDto implements Serializable {
   private String username;
   private String email;
   private String firstName;
   private String lastName;
-  private List<String> phoneNumber;
-  private List<AddressDto> address;
+  private List<String> phoneNumbers;
+  private List<AddressDto> addresses;
   private LocalDate dateOfBirth; // Format: "yyyy-MM-dd"
-  private String profilePictureUrl;
+  private String imageUrl;
 }

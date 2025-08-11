@@ -10,6 +10,7 @@ import com.jobfinder.finder.dto.user.UserResponseDto;
 import com.jobfinder.finder.entity.AddressEntity;
 import com.jobfinder.finder.entity.UserEntity;
 import com.jobfinder.finder.exception.UsernameConflictException;
+import com.jobfinder.finder.mapper.AddressMapper;
 import com.jobfinder.finder.mapper.UserMapper;
 import com.jobfinder.finder.repository.UserRepository;
 import com.jobfinder.finder.service.UserService;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @SpringBootTest
@@ -31,6 +33,10 @@ public class UserServiceTest extends CacheTestIntializer {
 
   @SpyBean
   UserMapper userMapper;
+
+
+  @SpyBean
+  AddressMapper addressMapper;
 
 
   @MockBean

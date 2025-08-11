@@ -1,8 +1,6 @@
 package com.jobfinder.finder.dto.submission;
 
 import com.jobfinder.finder.constant.SubmissionStatus;
-import jakarta.validation.constraints.NotBlank;
-import java.io.Serializable;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,13 +9,23 @@ import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
 @Getter
-public class SubmissionResponseDto implements Serializable {
+@Setter
+public class SubmissionStatusQueueMessage {
   private String submissionId;
+  private String username;
   private Long postId;
-  private String resumeUrl;
-  private String coverLetter;
   private SubmissionStatus status;
   private LocalDate submissionDate;
+
+  @Override
+  public String toString() {
+    return "SubmissionStatusQueueMessage{" +
+        "submissionId='" + submissionId + '\'' +
+        ", postId='" + postId + '\'' +
+        ", status='" + status + '\'' +
+        ", username='" + username + '\'' +
+        ", submissionDate=" + submissionDate +
+        '}';
+  }
 }

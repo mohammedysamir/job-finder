@@ -1,13 +1,16 @@
 package com.jobfinder.finder.controller;
 
 import com.jobfinder.finder.constant.PostStatus;
-import com.jobfinder.finder.dto.post.PostDto;
+import com.jobfinder.finder.dto.post.PostCreationDto;
+import com.jobfinder.finder.dto.post.PostResponseDto;
 import com.jobfinder.finder.dto.post.PostFilterRequestDto;
+import com.jobfinder.finder.dto.post.PostUpdateDto;
 import com.jobfinder.finder.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +45,7 @@ public class PostController {
       }
   )
   @GetMapping
-  public ResponseEntity<List<PostDto>> getPosts(@ModelAttribute PostFilterRequestDto filter, @RequestParam(defaultValue = "0") int page,
+  public ResponseEntity<List<PostResponseDto>> getPosts(@ModelAttribute PostFilterRequestDto filter, @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size) {
     log.info("Fetching posts");
     return new ResponseEntity<>(postService.getPosts(filter, page, size), HttpStatus.OK);
@@ -57,9 +60,9 @@ public class PostController {
   )
   @Operation(summary = "Create a new post", description = "Creates a new post with the provided details.")
   @PostMapping
-  public ResponseEntity<PostDto> createPost(PostDto dto) {
+  public ResponseEntity<PostResponseDto> createPost(@RequestBody @Valid PostCreationDto dto) {
     log.info("Creating a new post with filter: {}", dto);
-    PostDto createdPost = postService.createPost(dto);
+    PostResponseDto createdPost = postService.createPost(dto);
     return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
   }
 
@@ -72,9 +75,9 @@ public class PostController {
   )
   @Operation(summary = "Update Post by ID", description = "Updates a specific post by its ID and new information.")
   @PatchMapping("/{postId}")
-  public ResponseEntity<PostDto> updatePost(@PathVariable String postId, @RequestBody PostDto dto) {
+  public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long postId, @RequestBody PostUpdateDto dto) {
     log.info("Updating post with ID: {} with data: {}", postId, dto);
-    PostDto updatedPost = postService.updatePost(postId, dto);
+    PostResponseDto updatedPost = postService.updatePost(postId, dto);
     return new ResponseEntity<>(updatedPost, HttpStatus.OK);
   }
 
@@ -88,7 +91,7 @@ public class PostController {
   )
   @Operation(summary = "Patch Post Status", description = "Updates the status of a specific post by its ID.")
   @PatchMapping("/{postId}/status")
-  public ResponseEntity<Void> patchPostStatus(@PathVariable String postId, @RequestParam PostStatus status) {
+  public ResponseEntity<Void> patchPostStatus(@PathVariable Long postId, @RequestParam PostStatus status) {
     log.info("Update post status with ID: {} to {}", postId, status);
     postService.patchPostStatus(postId, status);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -103,7 +106,7 @@ public class PostController {
   )
   @Operation(summary = "Delete Post by ID", description = "Deletes a specific post by its ID.")
   @DeleteMapping("/{postId}")
-  public ResponseEntity<Void> deletePost(@PathVariable String postId) {
+  public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
     log.info("Deleting post with ID: {}", postId);
     postService.deletePost(postId);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);

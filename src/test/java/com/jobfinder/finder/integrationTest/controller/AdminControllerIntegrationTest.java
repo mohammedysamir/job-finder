@@ -200,7 +200,7 @@ public class AdminControllerIntegrationTest extends FinderIntegrationTestInitiat
   @WithUserDetails("admin")
   void updateAdmin_invalidAttribute_400() throws Exception {
     String username = "admin";
-    AdminPatchDto adminPatchDto = new AdminPatchDto("password1234", null);
+    AdminPatchDto adminPatchDto = new AdminPatchDto("password14", "admin@gmail.com");
 
     mockMvc.perform(MockMvcRequestBuilders.patch("/admin/{username}", username)
             .contentType("application/json")

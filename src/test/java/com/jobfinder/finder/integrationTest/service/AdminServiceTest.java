@@ -113,7 +113,7 @@ public class AdminServiceTest extends CacheTestIntializer {
   public void updateAdminTest() {
     // Assign
     String username = "admin";
-    AdminPatchDto dto = new AdminPatchDto("updatedPass", "alsoNewEmail@gmail.com");
+    AdminPatchDto dto = new AdminPatchDto("updatedPassword", "alsoNewEmail@gmail.com");
     AdminEntity newEntity = new AdminEntity(1L, username, dto.getPassword(), dto.getEmail());
 
     Mockito.when(adminRepository.findByUsername(username)).thenReturn(java.util.Optional.of(entity));

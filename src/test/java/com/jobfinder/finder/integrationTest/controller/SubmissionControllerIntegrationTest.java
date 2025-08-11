@@ -42,6 +42,7 @@ public class SubmissionControllerIntegrationTest extends FinderIntegrationTestIn
         coverLetter
     );
     SubmissionResponseDto response = new SubmissionResponseDto(
+        UUID.randomUUID().toString(),
         postId,
         resumeUrl,
         coverLetter,
@@ -148,6 +149,7 @@ public class SubmissionControllerIntegrationTest extends FinderIntegrationTestIn
 
     List<SubmissionResponseDto> response = List.of(
         new SubmissionResponseDto(
+            UUID.randomUUID().toString(),
             20134L,
             resumeUrl,
             coverLetter,
@@ -155,6 +157,7 @@ public class SubmissionControllerIntegrationTest extends FinderIntegrationTestIn
             LocalDate.of(2025, 1, 5)
         ),
         new SubmissionResponseDto(
+            UUID.randomUUID().toString(),
             39L,
             resumeUrl,
             coverLetter,
@@ -198,6 +201,7 @@ public class SubmissionControllerIntegrationTest extends FinderIntegrationTestIn
 
     List<SubmissionResponseDto> response = List.of(
         new SubmissionResponseDto(
+            UUID.randomUUID().toString(),
             20134L,
             resumeUrl,
             coverLetter,
@@ -250,6 +254,7 @@ public class SubmissionControllerIntegrationTest extends FinderIntegrationTestIn
     SubmissionStatus status = SubmissionStatus.ACCEPTED;
 
     SubmissionResponseDto response = new SubmissionResponseDto(
+        UUID.randomUUID().toString(),
         postId,
         resumeUrl,
         coverLetter,
@@ -279,6 +284,7 @@ public class SubmissionControllerIntegrationTest extends FinderIntegrationTestIn
     SubmissionStatus status = SubmissionStatus.ACCEPTED;
 
     SubmissionResponseDto response = new SubmissionResponseDto(
+        UUID.randomUUID().toString(),
         postId,
         resumeUrl,
         coverLetter,

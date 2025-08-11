@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -23,6 +24,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class AdminEntity {
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Id
@@ -31,7 +33,7 @@ public class AdminEntity {
   @Column(unique = true)
   private String username;
   @NotBlank
-  private String password;
+  private String password; //todo: hash password before saving
   @NotBlank
   @Email
   @Column(unique = true)

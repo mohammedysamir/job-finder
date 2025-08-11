@@ -7,13 +7,37 @@ spring:
       roles: USER
 
   #redis configuration
-  redis:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 2000
+      database: 0
+      enabled: false
+  #RabbitMQ configuration
+  rabbitmq:
     host: localhost
-    port: 6379
-    timeout: 2000
-    database: 0
+    port: 15672
+    username: jobfinder
+    password: PeFwrDFD4gKZvTzxcvZf
+    virtual-host: /
+    publisher-confirms: true
+    publisher-returns: true
     enabled: false
 
+    #SMTP configuration
+    mail:
+      host: smtp.example.com
+      port: 587
+      username: mohammedre4a@gmail.com
+      password: EXoCguG3$ip!WP
+      from: mohammedre4a@gmail.com
+      properties:
+        mail:
+          smtp:
+            auth: true
+            starttls:
+            enable: true
   #Database configuration
   jpa:
     defer-datasource-initialization: true

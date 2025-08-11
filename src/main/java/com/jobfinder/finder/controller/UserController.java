@@ -81,7 +81,7 @@ public class UserController {
   @GetMapping("/{username}/profile")
   public ResponseEntity<UserResponseDto> getUserProfile(@PathVariable String username) {
     log.info("Fetching user profile for username: {}", username);
-    return new ResponseEntity<>(userService.getUserProfile(username), HttpStatus.OK); //todo: add cache
+    return new ResponseEntity<>(userService.getUserProfile(username), HttpStatus.OK);
   }
 
   @ApiResponses(
