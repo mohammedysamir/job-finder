@@ -7,18 +7,20 @@ import org.springframework.amqp.core.TopicExchange;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-@ConditionalOnProperty("${spring.rabbitmq.enabled:false}")
+@ConditionalOnProperty(name = "spring.rabbitmq.enabled", havingValue = "true")
+@Configuration
 public class RabbitMQConfiguration {
 
   @Value("${spring.rabbitmq.host:localhost}")
-  private static String host;
+  private String host;
   @Value("${spring.rabbitmq.port:5672}")
-  private static int port;
+  private int port;
   @Value("${spring.rabbitmq.username:guest}")
-  private static String username;
+  private String username;
   @Value("${spring.rabbitmq.password:guest}")
-  private static String password;
+  private String password;
 
   @Bean
   public TopicExchange submissionStatusExchange() {
@@ -27,7 +29,7 @@ public class RabbitMQConfiguration {
 
   @Bean
   public Queue submissionStatusChangedQueue() {
-    return new Queue(RabbitMQConstants.POST_STATUS_CHANGED_QUEUE, true);
+    return new Queue(RabbitMQConstants.SUBMISSION_STATUS_CHANGED_QUEUE, true);
   }
 
   @Bean
