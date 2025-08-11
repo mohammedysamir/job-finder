@@ -10,6 +10,8 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface SubmissionMapper {
+  @Mapping(target = "submissionDate", expression = "java(java.time.LocalDate.now())")
+  @Mapping(target = "status", expression = "java(com.jobfinder.finder.constant.SubmissionStatus.SUBMITTED)")
   SubmissionEntity toEntity(SubmissionRequestDto dto);
 
   SubmissionResponseDto toDto(SubmissionEntity submissionEntity);

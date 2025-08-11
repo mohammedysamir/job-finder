@@ -13,10 +13,13 @@ import com.jobfinder.finder.entity.SubmissionEntity;
 import com.jobfinder.finder.mapper.SubmissionMapper;
 import com.jobfinder.finder.repository.PostRepository;
 import com.jobfinder.finder.repository.SubmissionRepository;
+import com.jobfinder.finder.repository.UserRepository;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -32,6 +35,7 @@ import org.springframework.stereotype.Service;
 public class SubmissionService {
   private final SubmissionRepository submissionRepository;
   private final PostRepository postRepository;
+  private final UserRepository userRepository;
   private final SubmissionMapper submissionMapper;
   private final RabbitTemplate rabbitTemplate;
 
@@ -65,11 +69,11 @@ public class SubmissionService {
       log.error("Post with ID {} is not active", dto.getPostId());
       throw new IllegalArgumentException("Post is closed or suspended");
     }
-
+    if (userRepository.findByUsername(dto.getUsername()).isEmpty()) {
+      log.error("User with username {} does not exist", dto.getUsername());
+      throw new IllegalArgumentException("User does not exist");
+    }
     SubmissionEntity entity = submissionMapper.toEntity(dto);
-    entity.setStatus(SubmissionStatus.SUBMITTED);
-    entity.setSubmissionDate(LocalDate.now());
-
     submissionRepository.save(entity);
 
     log.info("Post with ID {} submitted successfully", dto.getPostId());

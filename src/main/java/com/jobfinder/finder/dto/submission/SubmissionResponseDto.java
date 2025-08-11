@@ -14,9 +14,8 @@ import lombok.Setter;
 @Setter
 @Getter
 public class SubmissionResponseDto implements Serializable {
-  @NotBlank
+  private String submissionId;
   private Long postId;
-  @NotBlank
   private String resumeUrl;
   private String coverLetter;
   private SubmissionStatus status;
