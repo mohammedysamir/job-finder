@@ -2,6 +2,7 @@ package com.jobfinder.finder.integrationTest.service;
 
 import com.jobfinder.finder.config.redis.RedisConfiguration;
 import com.jobfinder.finder.constant.Roles;
+import com.jobfinder.finder.constant.UserStatus;
 import com.jobfinder.finder.dto.user.AddressDto;
 import com.jobfinder.finder.dto.user.UserLoginDto;
 import com.jobfinder.finder.dto.user.UserPatchDto;
@@ -50,10 +51,10 @@ public class UserServiceTest extends CacheTestIntializer {
 
   UserEntity applicant = new UserEntity(1L, "applicant", "1234topSecret", "applicant@gmail.com", "mohammed", "yasser", List.of("+20123456789"),
       List.of(new AddressEntity("Egypt", "Cairo", "12511")), LocalDate.of(2000, 1, 1), "https://example.com/profile.jpg", List.of(),
-      Roles.APPLICANT);
+      Roles.APPLICANT, UserStatus.CREATED);
   UserEntity recruiter = new UserEntity(2L, "recruiter", "very$trongPa$$w0rd", "recruiter@gmail.com", "ahmed", "mamdouh", List.of("+20123456623"),
       List.of(new AddressEntity("Egypt", "Mania", "10213")), LocalDate.of(1993, 10, 23), "https://example.com/profile.jpg", List.of(),
-      Roles.RECRUITER);
+      Roles.RECRUITER, UserStatus.CREATED);
 
   //-- Get User Profile tests --//
   @Test

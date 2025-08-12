@@ -5,6 +5,7 @@ import com.jobfinder.finder.constant.EmploymentType;
 import com.jobfinder.finder.constant.PostStatus;
 import com.jobfinder.finder.constant.Roles;
 import com.jobfinder.finder.constant.SubmissionStatus;
+import com.jobfinder.finder.constant.UserStatus;
 import com.jobfinder.finder.dto.submission.SubmissionFilterRequestDto;
 import com.jobfinder.finder.dto.submission.SubmissionRequestDto;
 import com.jobfinder.finder.dto.submission.SubmissionResponseDto;
@@ -32,7 +33,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.userdetails.User;
 
 @SpringBootTest
 public class SubmissionServiceTest extends CacheTestIntializer {
@@ -158,7 +158,7 @@ public class SubmissionServiceTest extends CacheTestIntializer {
     Mockito.when(postRepository.findById(Mockito.anyLong())).thenReturn(postEntityOptional);
     Mockito.when(userRepository.findByUsername(Mockito.anyString())).thenReturn(
         Optional.of(new UserEntity(1L,"mohammed", "password", "mohammedre4a@gmail.com","Mohammed","Yasser",List.of("+20 123456789"),
-            List.of(), LocalDate.of(2000, 1, 1), "imageUrl",List.of(), Roles.APPLICANT))
+            List.of(), LocalDate.of(2000, 1, 1), "imageUrl",List.of(), Roles.APPLICANT,UserStatus.CREATED))
     );
     SubmissionResponseDto result = submissionService.submitPost(
         new SubmissionRequestDto("mohammed", 1L, "coverLetterUrl", "resumeUrl"));
