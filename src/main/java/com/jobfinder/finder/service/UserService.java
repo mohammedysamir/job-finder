@@ -19,6 +19,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 
 @Service
 @Slf4j
@@ -27,6 +29,7 @@ public class UserService {
   private final UserRepository userRepository;
   private final UserMapper userMapper;
   private final AddressMapper addressMapper;
+  private final PasswordEncoder passwordEncoder;
 
   public UserResponseDto loginUser(@Valid UserLoginDto dto) {
     log.info("Logging in user: {}", dto.toString());
@@ -53,6 +56,7 @@ public class UserService {
     }
     UserEntity entity = userMapper.toEntity(dto);
     entity.setUserStatus(UserStatus.CREATED);
+    entity.setPassword( passwordEncoder.encode(dto.getPassword())); // Encode the password before saving
     userRepository.save(entity);
     return userMapper.toDto(entity);
   }

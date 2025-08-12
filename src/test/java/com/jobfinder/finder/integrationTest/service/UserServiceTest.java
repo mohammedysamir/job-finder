@@ -24,8 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootTest
 public class UserServiceTest extends CacheTestIntializer {
@@ -37,6 +37,9 @@ public class UserServiceTest extends CacheTestIntializer {
 
   @SpyBean
   AddressMapper addressMapper;
+
+  @SpyBean
+  PasswordEncoder passwordEncoder;
 
 
   @MockBean
