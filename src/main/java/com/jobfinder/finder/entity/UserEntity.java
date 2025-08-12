@@ -1,10 +1,13 @@
 package com.jobfinder.finder.entity;
 
 import com.jobfinder.finder.constant.Roles;
+import com.jobfinder.finder.constant.UserStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
@@ -85,11 +88,10 @@ public class UserEntity {
   List<SubmissionEntity> submissions;
 
   @NotNull
+  @Enumerated(EnumType.STRING)
   Roles role; // "Applicant" or "Recruiter"
-  //todo: add user status, e.g. CREATED,VERIFIED , SUSPENDED, DELETED
-  /*
-  @NotNull
-  UserStatus status;
 
-   */
+  @NotNull
+  @Enumerated(EnumType.STRING)
+  UserStatus userStatus;
 }

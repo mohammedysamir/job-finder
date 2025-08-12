@@ -1,7 +1,9 @@
 package com.jobfinder.finder.config.security;
 
 import com.jobfinder.finder.constant.Roles;
+import com.jobfinder.finder.repository.UserRepository;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -9,16 +11,22 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfiguration {
+  private final UserRepository userRepository;
+  private final JobFinderUserDetailsService userDetailsService;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     return http
         .csrf(AbstractHttpConfigurer::disable) // will use stateless authentication, so CSRF protection is not needed
+        .userDetailsService(userDetailsService)
         .authorizeHttpRequests(
             c ->
                 // Define access rules for different endpoints
@@ -49,38 +57,13 @@ public class SecurityConfiguration {
         .httpBasic(Customizer.withDefaults())
         .build();
   }
-
-  //todo: use database for user authentication
-  //define a new UserDetailsService bean to provide user details for authentication
-  // override UserDetails object to include role, username, email, and password -> to enable authenticating using username or email
-  @Bean
-  public UserDetailsService userDetailsService() {
-    return new InMemoryUserDetailsManager(List.of(
-        // Super Admin
-        org.springframework.security.core.userdetails.User.withUsername("superadmin")
-            .password("{noop}superadmin") // {noop} indicates no password encoding
-            .roles(Roles.SUPER_ADMIN.name())
-            .build(),
-        // Admin
-        org.springframework.security.core.userdetails.User.withUsername("admin")
-            .password("{noop}admin") // {noop} indicates no password encoding
-            .roles(Roles.ADMIN.name())
-            .build(),
-        // Applicant
-        org.springframework.security.core.userdetails.User.withUsername("applicant")
-            .password("{noop}applicant") // {noop} indicates no password encoding
-            .roles(Roles.APPLICANT.name())
-            .build(),
-        // Recruiter
-        org.springframework.security.core.userdetails.User.withUsername("recruiter")
-            .password("{noop}recruiter") // {noop} indicates no password encoding
-            .roles(Roles.RECRUITER.name())
-            .build()
-    ));
-  }
-  //todo: use JWT for stateless authentication
+//todo: use JWT for stateless authentication
 
   //todo: password encoding
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return NoOpPasswordEncoder.getInstance();
+  }
 }
 /*
 Roles:

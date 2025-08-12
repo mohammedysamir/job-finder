@@ -1,6 +1,7 @@
 package com.jobfinder.finder.service;
 
 import com.jobfinder.finder.config.redis.RedisConfiguration;
+import com.jobfinder.finder.constant.UserStatus;
 import com.jobfinder.finder.dto.user.UserLoginDto;
 import com.jobfinder.finder.dto.user.UserPatchDto;
 import com.jobfinder.finder.dto.user.UserRegistrationDto;
@@ -51,6 +52,7 @@ public class UserService {
       throw new UsernameConflictException(dto.getUsername());
     }
     UserEntity entity = userMapper.toEntity(dto);
+    entity.setUserStatus(UserStatus.CREATED);
     userRepository.save(entity);
     return userMapper.toDto(entity);
   }
