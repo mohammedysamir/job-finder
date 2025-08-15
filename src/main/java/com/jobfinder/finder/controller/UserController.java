@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/user")
@@ -29,7 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Tag(name = "User Management Controller", description = "Controller for managing user operations such as registration, profile retrieval, updates, and deletion.")
 public class UserController {
-  // - loginUser
   private final UserService userService;
 
   @ApiResponses(
@@ -98,12 +98,11 @@ public class UserController {
   )
   @PatchMapping("/{username}/profile")
   public ResponseEntity<UserResponseDto> updateUserProfile(@PathVariable String username,
-      @RequestBody UserPatchDto dto) { //todo: add ABAC security with PreAuthorize
+      @RequestBody UserPatchDto dto) {
     log.info("Updating user profile for username: {} with data: {}", username, dto.toString());
     return new ResponseEntity<>(userService.updateUserProfile(username, dto), HttpStatus.OK);
   }
 
-  //todo: to delete a user you must be an admin or the user itself
   @ApiResponses(
       value = {
           @ApiResponse(responseCode = "204", description = "User profile updated successfully"),
@@ -121,5 +120,21 @@ public class UserController {
     log.info("Deleting a user for username: {}", username);
     userService.deleteUser(username);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  }
+
+  @GetMapping("/verify")
+  public ResponseEntity<String> verifyUser(@RequestParam String token) {
+    log.info("Verifying user access");
+    if (token == null || token.isEmpty()) {
+      log.warn("Invalid token: Token is null or empty");
+      return new ResponseEntity<>("Invalid token", HttpStatus.BAD_REQUEST);
+    }
+
+    boolean tokenIsValid = userService.verifyUser(token);
+    if (!tokenIsValid) {
+      log.warn("Invalid token: Token does not exist or has expired");
+      return new ResponseEntity<>("Invalid token", HttpStatus.BAD_REQUEST);
+    }
+    return new ResponseEntity<>("User is verified", HttpStatus.OK);
   }
 }

@@ -1,8 +1,8 @@
 package com.jobfinder.finder.constant;
 
 public enum UserStatus {
-  CREATED,
-  ACTIVATED,
+  UNVERIFIED,
+  VERIFIED,
   DEACTIVATED,
   DELETED,
 }
