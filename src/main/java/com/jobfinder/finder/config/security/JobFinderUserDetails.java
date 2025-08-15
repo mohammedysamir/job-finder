@@ -45,7 +45,7 @@ public class JobFinderUserDetails implements UserDetails {
 
   @Override
   public boolean isEnabled() {
-    return this.userStatus == UserStatus.ACTIVATED || this.userStatus == UserStatus.CREATED;
+    return this.userStatus == UserStatus.VERIFIED || this.userStatus == UserStatus.UNVERIFIED;
   }
 
   public String getEmail() {

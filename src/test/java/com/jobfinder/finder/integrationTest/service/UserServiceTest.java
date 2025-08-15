@@ -15,10 +15,12 @@ import com.jobfinder.finder.mapper.AddressMapper;
 import com.jobfinder.finder.mapper.UserMapper;
 import com.jobfinder.finder.repository.UserRepository;
 import com.jobfinder.finder.service.UserService;
+import com.jobfinder.finder.service.VerificationTokenService;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,15 +48,19 @@ public class UserServiceTest extends CacheTestIntializer {
   @MockBean
   UserRepository userRepository;
 
+  @MockBean
+  VerificationTokenService verificationTokenService;
+
   @Autowired
   UserService userService;
 
-  UserEntity applicant = new UserEntity(1L, "applicant", "1234topSecret", "applicant@gmail.com", "mohammed", "yasser", List.of("+20123456789"),
+  UserEntity applicant = new UserEntity(1L, "applicant", "{noop}1234topSecret", "applicant@gmail.com", "mohammed", "yasser", List.of("+20123456789"),
       List.of(new AddressEntity("Egypt", "Cairo", "12511")), LocalDate.of(2000, 1, 1), "https://example.com/profile.jpg", List.of(),
-      Roles.APPLICANT, UserStatus.CREATED);
-  UserEntity recruiter = new UserEntity(2L, "recruiter", "very$trongPa$$w0rd", "recruiter@gmail.com", "ahmed", "mamdouh", List.of("+20123456623"),
+      Roles.APPLICANT, UserStatus.VERIFIED);
+  UserEntity recruiter = new UserEntity(2L, "recruiter", "{noop}very$trongPa$$w0rd", "recruiter@gmail.com", "ahmed", "mamdouh", List.of("+20123456623"),
       List.of(new AddressEntity("Egypt", "Mania", "10213")), LocalDate.of(1993, 10, 23), "https://example.com/profile.jpg", List.of(),
-      Roles.RECRUITER, UserStatus.CREATED);
+      Roles.RECRUITER, UserStatus.VERIFIED);
+
 
   //-- Get User Profile tests --//
   @Test
@@ -215,12 +221,14 @@ public class UserServiceTest extends CacheTestIntializer {
   @Test
   public void registerApplicantTest_happy() {
     // Assign
-    UserRegistrationDto dto = new UserRegistrationDto("newApplicant", "newPassword123", "applicant@gmail.com",
+    UserRegistrationDto dto = new UserRegistrationDto("newApplicant1", "newPassword123", "applicant@gmail.com",
         "Mohammed", "Yasser", List.of("+20123456789"),
         List.of(new AddressDto("Egypt", "Cairo", "12511")), LocalDate.of(2000, 1, 1), "https://example.com/profile.jpg",
         "APPLICANT");
 
     Mockito.when(userRepository.save(Mockito.any(UserEntity.class))).thenReturn(applicant);
+    Mockito.when(userRepository.findByUsername(Mockito.anyString())).thenReturn(Optional.empty());
+    Mockito.when(verificationTokenService.generateVerificationToken(Mockito.anyString())).thenReturn("dummyToken");
 
     // Act
     UserResponseDto response = userService.registerUser(dto);
@@ -236,12 +244,14 @@ public class UserServiceTest extends CacheTestIntializer {
   @Test
   public void registerRecruiterTest_happy() {
     // Assign
-    UserRegistrationDto dto = new UserRegistrationDto("newRecruiter", "newPassword123", "recruiter@gmail.com",
+    UserRegistrationDto dto = new UserRegistrationDto("newRecruiter1", "newPassword123", "recruiter@gmail.com",
         "Mohammed", "Yasser", List.of("+20123456789"),
         List.of(new AddressDto("Egypt", "Cairo", "12511")), LocalDate.of(2000, 1, 1), "https://example.com/profile.jpg",
         "RECRUITER");
 
     Mockito.when(userRepository.save(Mockito.any(UserEntity.class))).thenReturn(recruiter);
+    Mockito.when(userRepository.findByUsername(Mockito.anyString())).thenReturn(Optional.empty());
+    Mockito.when(verificationTokenService.generateVerificationToken(Mockito.anyString())).thenReturn("dummyToken");
 
     // Act
     UserResponseDto response = userService.registerUser(dto);

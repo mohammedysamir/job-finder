@@ -158,7 +158,7 @@ public class SubmissionServiceTest extends CacheTestIntializer {
     Mockito.when(postRepository.findById(Mockito.anyLong())).thenReturn(postEntityOptional);
     Mockito.when(userRepository.findByUsername(Mockito.anyString())).thenReturn(
         Optional.of(new UserEntity(1L,"mohammed", "password", "mohammedre4a@gmail.com","Mohammed","Yasser",List.of("+20 123456789"),
-            List.of(), LocalDate.of(2000, 1, 1), "imageUrl",List.of(), Roles.APPLICANT,UserStatus.CREATED))
+            List.of(), LocalDate.of(2000, 1, 1), "imageUrl",List.of(), Roles.APPLICANT,UserStatus.VERIFIED))
     );
     SubmissionResponseDto result = submissionService.submitPost(
         new SubmissionRequestDto("mohammed", 1L, "coverLetterUrl", "resumeUrl"));

@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -35,7 +36,7 @@ public class VerificationTokenService {
     Optional<UserEntity> userOptional = userRepository.findByUsernameOrEmail(null, email);
     if (userOptional.isEmpty()) {
       log.error("User with email {} does not exist", email);
-      throw new IllegalArgumentException("User with email " + email + " does not exist");
+      throw new UsernameNotFoundException("User with email " + email + " does not exist");
     }
 
     log.info("Generating verification token for email: {}", email);

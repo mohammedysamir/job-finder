@@ -19,7 +19,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 
 import static org.mockito.Mockito.mock;
 
-@Import({RedisConfiguration.class, MockUserDetailsManagerConfig.class})
+@Import({RedisConfiguration.class, MockUserDetailsManagerConfig.class,
+         RabbitMQConfiguration.class})
 @Configuration
 public class JobFinderTestConfiguration {
   //--Redis cache configuration for testing--//
