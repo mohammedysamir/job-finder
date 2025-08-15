@@ -5,8 +5,6 @@ import com.jobfinder.finder.dto.admin.AdminCreationDto;
 import com.jobfinder.finder.dto.admin.AdminPatchDto;
 import com.jobfinder.finder.dto.admin.AdminResponseDto;
 import com.jobfinder.finder.entity.AdminEntity;
-import com.jobfinder.finder.entity.UserEntity;
-import com.jobfinder.finder.exception.AdminNotFoundException;
 import com.jobfinder.finder.exception.UsernameConflictException;
 import com.jobfinder.finder.mapper.AdminMapper;
 import com.jobfinder.finder.repository.AdminRepository;
@@ -16,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,7 +23,7 @@ import org.springframework.stereotype.Service;
 public class AdminService {
   private final AdminRepository adminRepository;
   private final AdminMapper adminMapper;
-
+  private final PasswordEncoder passwordEncoder;
   private static final String ADMIN_NOT_FOUND_MESSAGE = "No admin was found with this username: ";
 
   @Cacheable(cacheNames = RedisConfiguration.CACHE_NAME, keyGenerator = "customRedisKeyGenerator")
@@ -65,7 +64,9 @@ public class AdminService {
       log.error("Admin with username {} already exists", dto.getUsername());
       throw new UsernameConflictException(dto.getUsername());
     }
-    adminRepository.save(adminMapper.toEntity(dto));
+    AdminEntity entity = adminMapper.toEntity(dto);
+    entity.setPassword(passwordEncoder.encode(entity.getPassword()));
+    adminRepository.save(entity);
     return adminMapper.toResponse(dto);
   }
 

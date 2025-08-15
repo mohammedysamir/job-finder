@@ -123,6 +123,17 @@ public class UserController {
   }
 
   @GetMapping("/verify")
+  @ApiResponses(
+      value = {
+          @ApiResponse(responseCode = "200", description = "User is verified"),
+          @ApiResponse(responseCode = "400", description = "Invalid token"),
+          @ApiResponse(responseCode = "500", description = "Internal server error")
+      }
+  )
+  @Operation(
+      summary = "Verify User Account",
+      description = "Endpoint to verify user access using a token. The token must be provided as a request parameter."
+  )
   public ResponseEntity<String> verifyUser(@RequestParam String token) {
     log.info("Verifying user access");
     if (token == null || token.isEmpty()) {

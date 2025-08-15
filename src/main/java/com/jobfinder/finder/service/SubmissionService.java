@@ -15,11 +15,9 @@ import com.jobfinder.finder.repository.PostRepository;
 import com.jobfinder.finder.repository.SubmissionRepository;
 import com.jobfinder.finder.repository.UserRepository;
 import jakarta.persistence.criteria.Predicate;
-import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -27,6 +25,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -56,7 +55,7 @@ public class SubmissionService {
     return pageResult.stream().map(submissionMapper::toDto).toList();
   }
 
-  //todo: ensure the authenticated user is the one who submitted the post
+  @PreAuthorize("#dto.username == authentication.username and hasRole('ROLE_APPLICANT')")
   public SubmissionResponseDto submitPost(SubmissionRequestDto dto) {
     log.info("Submit a post with data: {}", dto);
     Optional<PostEntity> optionalPostEntity = postRepository.findById(dto.getPostId());

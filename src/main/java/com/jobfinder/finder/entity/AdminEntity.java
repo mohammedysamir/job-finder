@@ -33,7 +33,7 @@ public class AdminEntity {
   @Column(unique = true)
   private String username;
   @NotBlank
-  private String password; //todo: hash password before saving
+  private String password;
   @NotBlank
   @Email
   @Column(unique = true)

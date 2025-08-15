@@ -126,7 +126,7 @@ public class UserService {
   }
 
   @CacheEvict(cacheNames = RedisConfiguration.CACHE_NAME, keyGenerator = "customRedisKeyGenerator")
-  @PreAuthorize("#username == authentication.username or hasRole('ADMIN')")
+  @PreAuthorize("#username == authentication.username or hasAnyRole('ADMIN','SUPER_ADMIN')")
   public void deleteUser(String username) {
     log.info("Deleting a user for username: {}", username);
     Optional<UserEntity> optionalUserEntity = userRepository.findByUsername(username);

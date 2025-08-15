@@ -98,7 +98,7 @@ public class QueueConsumer {
           USER_REGISTRATION_SUBJECT,
           String.format("Verify your account by clicking on this url: %s ",
               "http://localhost:8080/user/verify?token="
-                  + verificationTokenMessage.getToken())); //todo: create an endpoint for verification and depend on environment variable for the URL to be changed after deploying
+                  + verificationTokenMessage.getToken())); //todo: depend on environment variable for the URL to be changed after deploying
     }
   }
 }

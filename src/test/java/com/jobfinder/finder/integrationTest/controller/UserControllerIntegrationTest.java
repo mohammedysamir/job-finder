@@ -80,6 +80,7 @@ public class UserControllerIntegrationTest extends FinderIntegrationTestInitiato
             .contentType("application/json")
     ).andExpect(status().isBadRequest());
   }
+
   @Test
   @WithUserDetails("applicant")
   void registerUser_permitAll_invalidRole_400() throws Exception {
@@ -197,7 +198,7 @@ public class UserControllerIntegrationTest extends FinderIntegrationTestInitiato
   @Test
   @WithUserDetails("applicant")
   void deleteUser_authenticatedApplicant_happy()
-      throws Exception { //todo: add verification on the userService to check if the user is an admin or the user itself
+      throws Exception {
     // Given
     String username = "applicant";
     Mockito.doNothing().when(userService).deleteUser(username);
