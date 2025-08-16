@@ -6,6 +6,7 @@ import com.jobfinder.finder.dto.user.UserPatchDto;
 import com.jobfinder.finder.dto.user.UserRegistrationDto;
 import com.jobfinder.finder.dto.user.UserResponseDto;
 import com.jobfinder.finder.service.UserService;
+import com.jobfinder.finder.service.VerificationTokenService;
 import com.jobfinder.finder.validator.PhoneNumberValidator;
 import java.time.LocalDate;
 import java.util.List;
@@ -26,6 +27,9 @@ public class UserControllerIntegrationTest extends FinderIntegrationTestInitiato
 
   @MockBean
   private UserService userService;
+
+  @MockBean
+  private VerificationTokenService verificationTokenService;
 
   @Test
   @WithUserDetails("applicant")
