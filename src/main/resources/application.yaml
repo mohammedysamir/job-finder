@@ -72,3 +72,5 @@ logging:
 verification:
   token:
     ttlInHours: 24
+  cleanup:
+    interval: 1

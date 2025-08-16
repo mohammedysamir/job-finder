@@ -13,6 +13,8 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +23,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class VerificationTokenService {
 
-  @org.springframework.beans.factory.annotation.Value("${verification.token.ttlInHours:24}")
+  @Value("${verification.token.ttlInHours:24}")
   private static long TOKEN_TTL_IN_HOURS;
 
   private final VerificationTokenRepository verificationTokenRepository;
@@ -76,6 +78,17 @@ public class VerificationTokenService {
     user.setUserStatus(UserStatus.VERIFIED);
     userRepository.save(user);
     return true;
+  }
+
+  @Scheduled(fixedRateString = "${verification.token.cleanup.interval:1} * 3600000") // Default to 1 hour
+  private void cleanUpExpiredTokens() {
+    log.info("Cleaning up expired verification tokens");
+    verificationTokenRepository.findAll().stream()
+        .filter(this::isExpired)
+        .forEach(token -> {
+          log.info("Deleting expired token: {}", token.getToken());
+          verificationTokenRepository.delete(token);
+        });
   }
 
   private boolean isExpired(VerificationTokenEntity tokenEntity) {

@@ -68,8 +68,7 @@ public class UserService {
     entity.setPassword(passwordEncoder.encode(dto.getPassword())); // Encode the password before saving
     userRepository.save(entity);
     //after successful registration send a verification email
-    rabbitTemplate.convertAndSend(RabbitMQConstants.USER_REGISTRATION_CHANGED_ROUTING_KEY,
-        new VerificationTokenMessage(verificationTokenService.generateVerificationToken(dto.getEmail()), dto.getEmail()));
+    notifyUserOfRegistration(dto.getEmail());
     return userMapper.toDto(entity);
   }
 
@@ -138,8 +137,9 @@ public class UserService {
     }
   }
 
-  public boolean verifyUser(String token) {
-    log.info("Verifying user with token: {}", token);
-    return verificationTokenService.validateVerificationToken(token);
+  private void notifyUserOfRegistration(String email) {
+    log.info("Notifying user {} of registration", email);
+    rabbitTemplate.convertAndSend(RabbitMQConstants.USER_REGISTRATION_CHANGED_ROUTING_KEY,
+        new VerificationTokenMessage(verificationTokenService.generateVerificationToken(email), email));
   }
 }

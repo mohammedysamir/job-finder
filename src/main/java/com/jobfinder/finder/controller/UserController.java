@@ -5,6 +5,7 @@ import com.jobfinder.finder.dto.user.UserPatchDto;
 import com.jobfinder.finder.dto.user.UserRegistrationDto;
 import com.jobfinder.finder.dto.user.UserResponseDto;
 import com.jobfinder.finder.service.UserService;
+import com.jobfinder.finder.service.VerificationTokenService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "User Management Controller", description = "Controller for managing user operations such as registration, profile retrieval, updates, and deletion.")
 public class UserController {
   private final UserService userService;
+  private final VerificationTokenService verificationTokenService;
 
   @ApiResponses(
       value = {
@@ -141,7 +143,9 @@ public class UserController {
       return new ResponseEntity<>("Invalid token", HttpStatus.BAD_REQUEST);
     }
 
-    boolean tokenIsValid = userService.verifyUser(token);
+    log.info("Verifying user with token: {}", token);
+    boolean tokenIsValid = verificationTokenService.validateVerificationToken(token);
+
     if (!tokenIsValid) {
       log.warn("Invalid token: Token does not exist or has expired");
       return new ResponseEntity<>("Invalid token", HttpStatus.BAD_REQUEST);
