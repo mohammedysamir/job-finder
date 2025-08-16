@@ -70,6 +70,7 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
 verification:
+  url: http://localhost:8080/api/v1/verification
   token:
     ttlInHours: 24
   cleanup:

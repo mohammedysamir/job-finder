@@ -10,6 +10,7 @@ import com.jobfinder.finder.repository.UserRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,9 @@ public class QueueConsumer {
   private static final String POST_STATUS_CHANGED_SUBJECT = "Post Status Changed";
   private static final String USER_STATUS_CHANGED_SUBJECT = "User Status Changed";
   private static final String USER_REGISTRATION_SUBJECT = "Verify Your Email";
+
+  @Value("${verification.url}")
+  private String verificationUrl;
 
   @RabbitListener(queues = SUBMISSION_STATUS_CHANGED_QUEUE)
   public void consumeMessageForSubmissionStatusChange(Object message) {
@@ -97,8 +101,8 @@ public class QueueConsumer {
       emailService.sendEmail(email,
           USER_REGISTRATION_SUBJECT,
           String.format("Verify your account by clicking on this url: %s ",
-              "http://localhost:8080/user/verify?token="
-                  + verificationTokenMessage.getToken())); //todo: depend on environment variable for the URL to be changed after deploying
+              verificationUrl + "?token="
+                  + verificationTokenMessage.getToken()));
     }
   }
 }
