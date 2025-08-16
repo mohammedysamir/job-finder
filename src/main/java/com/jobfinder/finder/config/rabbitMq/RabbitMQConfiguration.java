@@ -56,7 +56,7 @@ public class RabbitMQConfiguration {
         .with(RabbitMQConstants.POST_STATUS_CHANGED_ROUTING_KEY);
   }
 
-  //-- Beans for User Registration and Login Notifications --//
+  //-- Beans for User status change Notifications --//
   @Bean
   public TopicExchange userStatusExchange() {
     return new TopicExchange(RabbitMQConstants.USER_STATUS_EXCHANGE);
@@ -72,6 +72,25 @@ public class RabbitMQConfiguration {
     return BindingBuilder.bind(userStatusChangedQueue)
         .to(userStatusExchange)
         .with(RabbitMQConstants.USER_STATUS_CHANGED_ROUTING_KEY);
+  }
+
+
+  //-- Beans for User Registration and Login Notifications --//
+  @Bean
+  public TopicExchange userRegistrationExchange() {
+    return new TopicExchange(RabbitMQConstants.USER_REGISTRATION_EXCHANGE);
+  }
+
+  @Bean
+  public Queue userRegistrationQueue() {
+    return new Queue(RabbitMQConstants.USER_REGISTRATION_CHANGED_QUEUE, true);
+  }
+
+  @Bean
+  public Binding userRegistrationBinding(Queue userRegistrationQueue, TopicExchange userRegistrationExchange) {
+    return BindingBuilder.bind(userRegistrationQueue)
+        .to(userRegistrationExchange)
+        .with(RabbitMQConstants.USER_REGISTRATION_CHANGED_ROUTING_KEY);
   }
 
 

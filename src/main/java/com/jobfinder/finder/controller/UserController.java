@@ -152,4 +152,6 @@ public class UserController {
     }
     return new ResponseEntity<>("User is verified", HttpStatus.OK);
   }
+
+  //todo: implement forgetPassword functionality
 }
