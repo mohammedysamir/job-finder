@@ -93,6 +93,7 @@ public class VerificationTokenService {
 
   private boolean isExpired(VerificationTokenEntity tokenEntity) {
     long expirationTime = tokenEntity.getExpiryDate().getTime();
-    return System.currentTimeMillis() > expirationTime;
+    long ttlMillis = TOKEN_TTL_IN_HOURS * 3600_000;
+    return System.currentTimeMillis() + ttlMillis  < expirationTime;
   }
 }
