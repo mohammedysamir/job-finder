@@ -1,10 +1,13 @@
 package com.jobfinder.finder.service;
 
+import com.jobfinder.finder.config.rabbitMq.RabbitMQConstants;
 import com.jobfinder.finder.config.redis.RedisConfiguration;
+import com.jobfinder.finder.constant.UserStatus;
 import com.jobfinder.finder.dto.user.UserLoginDto;
 import com.jobfinder.finder.dto.user.UserPatchDto;
 import com.jobfinder.finder.dto.user.UserRegistrationDto;
 import com.jobfinder.finder.dto.user.UserResponseDto;
+import com.jobfinder.finder.dto.user.VerificationTokenMessage;
 import com.jobfinder.finder.entity.UserEntity;
 import com.jobfinder.finder.exception.UsernameConflictException;
 import com.jobfinder.finder.mapper.AddressMapper;
@@ -14,10 +17,14 @@ import jakarta.validation.Valid;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 
 @Service
 @Slf4j
@@ -26,13 +33,19 @@ public class UserService {
   private final UserRepository userRepository;
   private final UserMapper userMapper;
   private final AddressMapper addressMapper;
+  private final VerificationTokenService verificationTokenService;
+  private final PasswordEncoder passwordEncoder;
+  private final RabbitTemplate rabbitTemplate;
 
   public UserResponseDto loginUser(@Valid UserLoginDto dto) {
     log.info("Logging in user: {}", dto.toString());
     Optional<UserEntity> optionalUserEntity = userRepository.findByUsernameOrEmail(dto.getUsername(), dto.getEmail());
     if (optionalUserEntity.isPresent()) {
       UserEntity userEntity = optionalUserEntity.get();
-      //todo: Here you would typically check the password, but for simplicity, we assume it's correct
+      if (!passwordEncoder.matches(dto.getPassword(), userEntity.getPassword())) {
+        log.error("Invalid password for user: {}", dto.getUsername());
+        throw new UsernameNotFoundException("Invalid password for user: " + dto.getUsername());
+      }
       return userMapper.toDto(userEntity);
     } else {
       log.warn("User with username/email not found");
@@ -51,7 +64,11 @@ public class UserService {
       throw new UsernameConflictException(dto.getUsername());
     }
     UserEntity entity = userMapper.toEntity(dto);
+    entity.setUserStatus(UserStatus.UNVERIFIED);
+    entity.setPassword(passwordEncoder.encode(dto.getPassword())); // Encode the password before saving
     userRepository.save(entity);
+    //after successful registration send a verification email
+    notifyUserOfRegistration(dto.getEmail());
     return userMapper.toDto(entity);
   }
 
@@ -68,6 +85,7 @@ public class UserService {
     }
   }
 
+  @PreAuthorize("#username == authentication.username")
   public UserResponseDto updateUserProfile(String username, UserPatchDto dto) {
     log.info("Updating user profile for username: {} with data: {}", username, dto.toString());
     Optional<UserEntity> optionalUserEntity = userRepository.findByUsername(username);
@@ -107,6 +125,7 @@ public class UserService {
   }
 
   @CacheEvict(cacheNames = RedisConfiguration.CACHE_NAME, keyGenerator = "customRedisKeyGenerator")
+  @PreAuthorize("#username == authentication.username or hasAnyRole('ADMIN','SUPER_ADMIN')")
   public void deleteUser(String username) {
     log.info("Deleting a user for username: {}", username);
     Optional<UserEntity> optionalUserEntity = userRepository.findByUsername(username);
@@ -118,4 +137,9 @@ public class UserService {
     }
   }
 
+  private void notifyUserOfRegistration(String email) {
+    log.info("Notifying user {} of registration", email);
+    rabbitTemplate.convertAndSend(RabbitMQConstants.USER_REGISTRATION_CHANGED_ROUTING_KEY,
+        new VerificationTokenMessage(verificationTokenService.generateVerificationToken(email), email));
+  }
 }

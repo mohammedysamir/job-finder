@@ -12,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Profile;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,10 +28,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     RabbitAutoConfiguration.class,
     org.springframework.boot.actuate.autoconfigure.amqp.RabbitHealthContributorAutoConfiguration.class,
     RedisAutoConfiguration.class
-})class ActuatorIntegrationTest extends FinderIntegrationTestInitiator {
+})
+@Profile("test")
+class ActuatorIntegrationTest extends FinderIntegrationTestInitiator {
 
   @Autowired
   MockMvc mockMvc;
+
+  @Autowired
+  UserDetailsService userDetailsService;
 
   @Test
   @WithUserDetails("admin")

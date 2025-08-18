@@ -5,6 +5,7 @@ import com.jobfinder.finder.exception.CloseAClosedPositionException;
 import com.jobfinder.finder.exception.PostNoLongerExistsException;
 import com.jobfinder.finder.exception.UnauthorizedException;
 import com.jobfinder.finder.exception.UserAlreadyExistsException;
+import com.jobfinder.finder.exception.UsernameConflictException;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
@@ -44,8 +45,8 @@ public class GlobalExceptionHandlerController {
     return ResponseEntity.badRequest().body(ex.getMessage());
   }
 
-  @ExceptionHandler(UserAlreadyExistsException.class)
-  public ResponseEntity<String> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
+  @ExceptionHandler(exception = {UserAlreadyExistsException.class, UsernameConflictException.class})
+  public ResponseEntity<String> handleUserAlreadyExistsException(Exception ex) {
     log.error("User already exists exception: {}", ex.getMessage());
     return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
   }
@@ -56,7 +57,7 @@ public class GlobalExceptionHandlerController {
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You are not allowed to perform this action");
   }
 
-  @ExceptionHandler(exception = {MethodArgumentNotValidException.class, ValidationException.class})
+  @ExceptionHandler(exception = {MethodArgumentNotValidException.class, ValidationException.class, ConstraintViolationException.class})
   public ResponseEntity<String> handleValidationException(Exception ex) {
     log.error("Validation exception: {}", ex.getMessage());
     return ResponseEntity.badRequest().body("Validation error: " + ex.getMessage());

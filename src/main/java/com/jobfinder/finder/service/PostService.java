@@ -27,6 +27,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -55,6 +56,7 @@ public class PostService {
     return pageResult.stream().filter(entity -> !entity.getStatus().equals(PostStatus.SUSPENDED)).map(postMapper::toDto).toList();
   }
 
+  @PreAuthorize("dto.username == authentication.username and hasRole('RECRUITER')")
   public PostResponseDto createPost(@Valid PostCreationDto dto) {
     log.info("Creating a new post with data: {}", dto);
     PostEntity entity = postMapper.toEntity(dto);
@@ -63,6 +65,7 @@ public class PostService {
     return postMapper.toPostDto(dto);
   }
 
+  @PreAuthorize("dto.username == authentication.username and hasRole('RECRUITER')")
   public PostResponseDto updatePost(Long postId, PostUpdateDto dto) {
     log.info("Updating post with ID: {} with data: {}", postId, dto);
     PostEntity existingPost = postRepository.findById(Long.valueOf(postId))
@@ -74,6 +77,7 @@ public class PostService {
     return postMapper.toDto(entity);
   }
 
+  @PreAuthorize("hasRole('RECRUITER')")
   public void patchPostStatus(Long postId, PostStatus status) {
     log.info("Update post status with ID: {} to {}", postId, status);
     PostEntity existingPost = postRepository.findById(postId)
@@ -86,6 +90,7 @@ public class PostService {
   }
 
   @CacheEvict(cacheNames = RedisConfiguration.CACHE_NAME, keyGenerator = "customRedisKeyGenerator")
+  @PreAuthorize("hasRole('RECRUITER')")
   public void deletePost(Long postId) {
     log.info("Deleting a post with ID: {}", postId);
     PostEntity existingPost = postRepository.findById(Long.valueOf(postId))

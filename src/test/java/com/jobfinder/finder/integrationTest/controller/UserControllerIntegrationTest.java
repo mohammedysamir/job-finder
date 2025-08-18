@@ -6,6 +6,7 @@ import com.jobfinder.finder.dto.user.UserPatchDto;
 import com.jobfinder.finder.dto.user.UserRegistrationDto;
 import com.jobfinder.finder.dto.user.UserResponseDto;
 import com.jobfinder.finder.service.UserService;
+import com.jobfinder.finder.service.VerificationTokenService;
 import com.jobfinder.finder.validator.PhoneNumberValidator;
 import java.time.LocalDate;
 import java.util.List;
@@ -26,6 +27,9 @@ public class UserControllerIntegrationTest extends FinderIntegrationTestInitiato
 
   @MockBean
   private UserService userService;
+
+  @MockBean
+  private VerificationTokenService verificationTokenService;
 
   @Test
   @WithUserDetails("applicant")
@@ -80,6 +84,7 @@ public class UserControllerIntegrationTest extends FinderIntegrationTestInitiato
             .contentType("application/json")
     ).andExpect(status().isBadRequest());
   }
+
   @Test
   @WithUserDetails("applicant")
   void registerUser_permitAll_invalidRole_400() throws Exception {
@@ -197,7 +202,7 @@ public class UserControllerIntegrationTest extends FinderIntegrationTestInitiato
   @Test
   @WithUserDetails("applicant")
   void deleteUser_authenticatedApplicant_happy()
-      throws Exception { //todo: add verification on the userService to check if the user is an admin or the user itself
+      throws Exception {
     // Given
     String username = "applicant";
     Mockito.doNothing().when(userService).deleteUser(username);
